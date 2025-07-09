@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { showToast } from "$lib/components/toast.svelte";
 import type { PageProps } from "./$types";
 
 let { data }: PageProps = $props();
@@ -54,7 +55,10 @@ let { carts } = data;
 }
 
 .card__icon {
-    max-width: 96px;
+    width: 96px;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 0.5rem;
     /* filter: invert(); */
 }
 </style>

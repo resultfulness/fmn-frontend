@@ -11,3 +11,10 @@
 >
   {name}
 </span>
+
+<style>
+.material-symbols-rounded {
+  display: grid;
+  place-items: center;
+}
+</style>

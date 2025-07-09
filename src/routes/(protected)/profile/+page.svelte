@@ -6,6 +6,7 @@ import app from "$lib/app.svelte";
 import api, { ApiError } from "$lib/api";
 import auth from "$lib/auth.svelte";
 import { goto } from "$app/navigation";
+import { showToast } from "$lib/components/toast.svelte";
 
 let user = $derived(app.user!);
 
@@ -41,7 +42,8 @@ async function handleSubmit(e: SubmitEvent) {
         });
         if (data) {
             app.user = data;
-            goto("/profile");
+            showToast("data saved");
+            // goto("/profile");
         }
     } catch (e) {
         const ae = e as ApiError;
@@ -121,7 +123,7 @@ async function handleSubmit(e: SubmitEvent) {
                     </tr>
                     <tr class="card--info__details__entry">
                         <td>password:</td>
-                        <td>
+                        <td class="card--info__details__password">
                             {#each Array(8) as _}
                                 <Icon name="circle" size={12} />
                             {/each}
@@ -136,6 +138,7 @@ async function handleSubmit(e: SubmitEvent) {
 <Button fillwidth onclick={() => {
     auth.clear();
     goto("/login");
+    showToast("logged out");
 }}>
     logout
 </Button>
@@ -194,6 +197,11 @@ h1 {
 .card--info__details__entry {
     display: flex;
     justify-content: space-between;
+}
+
+.card--info__details__password {
+    display: flex;
+    align-items: center;
 }
 
 td { padding: 0; }
