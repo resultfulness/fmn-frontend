@@ -26,7 +26,13 @@ export type Cart = {
     items: Item[]
 } & CartSearch
 
+export type Items = {
+    items: Item[];
+    count: number;
+}
+
 export type Item = {
+    item_id: number;
     name: string;
     icon: string;
 }

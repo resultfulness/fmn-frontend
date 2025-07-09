@@ -2,7 +2,7 @@
 import Button from "$lib/components/button.svelte";
 import Input from "$lib/components/input.svelte";
 import Separator from "$lib/components/separator.svelte";
-import api from "$lib/api";
+import api, { ApiError } from "$lib/api";
 import app from "$lib/app.svelte";
 import { goto } from "$app/navigation";
 
@@ -42,8 +42,13 @@ async function handleSubmit(e: SubmitEvent) {
             app.user = data;
             goto("/");
         }
-    } catch (e: any) {
-        form.error.email = e.message;
+    } catch (e) {
+        const ae = e as ApiError;
+        switch (ae.status) {
+            case 409:
+                form.error.email = ae.message;
+                break;
+        }
     }
 
 }
@@ -76,7 +81,7 @@ async function handleSubmit(e: SubmitEvent) {
             error={form.error.password2}
         />
         <div class="form__submit">
-            <Button>register</Button>
+            <Button fillwidth>register</Button>
         </div>
         <Separator text="or" spacing="0.5rem"/>
         <Button style="secondary" type="link" href="/login">login here</Button>

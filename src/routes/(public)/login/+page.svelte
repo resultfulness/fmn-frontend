@@ -1,7 +1,7 @@
 <script lang="ts">
 import Button from "$lib/components/button.svelte";
 import Input from "$lib/components/input.svelte";
-import api from "$lib/api";
+import api, { ApiError } from "$lib/api";
 import app from "$lib/app.svelte";
 import { goto } from "$app/navigation";
 import Separator from "$lib/components/separator.svelte";
@@ -35,8 +35,13 @@ async function handleSubmit(e: SubmitEvent) {
             app.user = data;
             goto("/");
         }
-    } catch (e: any) {
-        form.error.password = e.message;
+    } catch (e) {
+        const ae = e as ApiError;
+        switch (ae.status) {
+            case 401:
+                form.error.password = ae.message;
+                break;
+        }
     }
 
 }

@@ -1,7 +1,14 @@
 import app from "./app.svelte";
-import type { Cart, CartSearch, Carts, User, UserPatch } from "./types";
+import type { Cart, Carts, Items, UserPatch } from "./types";
 
 const API_URL = "https://localhost:5000";
+
+export class ApiError extends Error {
+    constructor(message: string, public status: number) {
+        super(message);
+        this.status = status;
+    }
+}
 
 async function apiFetch(
     endpoint: string,
@@ -19,7 +26,7 @@ async function apiFetch(
         return null;
     }
     if (!r.ok) {
-        throw new Error((await r.json()).error || "unknown error");
+        throw new ApiError((await r.json()).error || "unknown error", r.status);
     } else {
         return await r.json();
     }
@@ -28,11 +35,7 @@ async function apiFetch(
 const api = {
     users: {
         async me() {
-            try {
-                return await apiFetch("/users/me");
-            } catch (e) {
-                console.error(e.message);
-            }
+            return await apiFetch("/users/me");
         },
         async login(email: string, password: string) {
             return await apiFetch(
@@ -56,14 +59,20 @@ const api = {
             )
         }
     },
-    async getCarts(): Promise<Carts> {
-        return await apiFetch("/carts/search");
+    carts: {
+        async getAll(): Promise<Carts> {
+            return await apiFetch("/carts/search");
+        },
+        async get(id: number): Promise<Cart> {
+            return await apiFetch(`/carts/${id}`)
+        },
     },
-    async getCart(id: number): Promise<Cart> {
-        return await apiFetch(`/carts/${id}`)
+    items: {
+        async getAll(): Promise<Items> {
+            return await apiFetch("/items/search");
+        }
     },
-    async getRecipes() { },
-    async getItems() { },
+    recipes: {},
 }
 
 export default api;

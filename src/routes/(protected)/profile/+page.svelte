@@ -3,7 +3,7 @@ import Button from "$lib/components/button.svelte";
 import Icon from "$lib/components/icon.svelte";
 import Input from "$lib/components/input.svelte";
 import app from "$lib/app.svelte";
-import api from "$lib/api";
+import api, { ApiError } from "$lib/api";
 import auth from "$lib/auth.svelte";
 import { goto } from "$app/navigation";
 
@@ -26,16 +26,6 @@ async function handleSubmit(e: SubmitEvent) {
     e.preventDefault();
     form.error = { username: "", email: "", newPassword: "" };
 
-    if (!form.username) {
-        form.error.username = "username required";
-        return;
-    }
-
-    if (!form.email) {
-        form.error.email = "email required";
-        return;
-    }
-
     if (form.email === user.email &&
         form.username === user.username &&
         form.newPassword.length < 1
@@ -45,22 +35,27 @@ async function handleSubmit(e: SubmitEvent) {
 
     try {
         const data = await api.users.patch({
-            username: form.username,
-            email: form.email,
+            username: form.username.length > 0 ? form.username : undefined,
+            email: form.email.length > 0 ? form.email : undefined,
             password: form.newPassword.length > 0 ? form.newPassword : undefined
         });
         if (data) {
             app.user = data;
             goto("/profile");
         }
-    } catch (e: any) {
-        form.error.newPassword = e.message;
+    } catch (e) {
+        const ae = e as ApiError;
+        switch (ae.status) {
+            case 409:
+                form.error.email = ae.message;
+                break;
+        }
     }
 
 }
 </script>
 
-<h1>
+<h1 title={user.username}>
     {user.username}
 </h1>
 <section class="card card--info">
@@ -148,6 +143,8 @@ async function handleSubmit(e: SubmitEvent) {
 <style>
 h1 {
     text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .card {
