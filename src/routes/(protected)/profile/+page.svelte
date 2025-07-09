@@ -22,15 +22,18 @@ let form = $state({
     },
 });
 
+let submitDisabled = $derived(
+    (form.email === user.email || form.email.length < 1) &&
+    (form.username === user.username || form.username.length < 1) &&
+    form.newPassword.length < 1
+);
+
 
 async function handleSubmit(e: SubmitEvent) {
     e.preventDefault();
     form.error = { username: "", email: "", newPassword: "" };
 
-    if (form.email === user.email &&
-        form.username === user.username &&
-        form.newPassword.length < 1
-    ) {
+    if (submitDisabled) {
         return;
     }
 
@@ -104,7 +107,9 @@ async function handleSubmit(e: SubmitEvent) {
                 >
                     cancel
                 </Button>
-                <Button fillwidth>save</Button>
+                <Button fillwidth disabled={submitDisabled}>
+                    save
+                </Button>
             </div>
         </form>
     {:else}

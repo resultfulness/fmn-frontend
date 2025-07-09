@@ -8,6 +8,7 @@ interface ButtonProps {
     style?: "primary" | "secondary" | "transparent";
     href?: string;
     fillwidth?: boolean;
+    disabled?: boolean;
 }
 
 let {
@@ -17,6 +18,7 @@ let {
     style = "primary",
     href,
     fillwidth = false,
+    disabled = false,
 }: ButtonProps = $props();
 </script>
 
@@ -28,6 +30,8 @@ let {
         class:button--secondary={style === "secondary"}
         class:button--transparent={style === "transparent"}
         class:button--fillwidth={fillwidth}
+        style:pointer-events={disabled ? "none" : "all"}
+        class:button--disabled={disabled}
     >
         {@render children()}
     </a>
@@ -35,6 +39,7 @@ let {
     <button
         {onclick}
         {type}
+        {disabled}
         class="button"
         class:button--primary={style === "primary"}
         class:button--secondary={style === "secondary"}
@@ -88,4 +93,8 @@ let {
     background-color: transparent;
 }
 
+.button:disabled, .button--disabled {
+    background-color: var(--color-muted);
+    color: var(--color-background);
+}
 </style>
