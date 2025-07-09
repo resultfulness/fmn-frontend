@@ -8,7 +8,7 @@ export const load: LayoutLoad = async ({ url, fetch }) => {
     if (!auth.token) {
         goto("/login");
     } else {
-        const user = await api.getUser();
+        const user = await api.users.me();
         if (!user) {
             auth.clear();
             goto("/login");

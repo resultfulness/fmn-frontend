@@ -37,7 +37,7 @@ async function handleSubmit(e: SubmitEvent) {
     }
 
     try {
-        const data = await api.register(form.email, form.password);
+        const data = await api.users.register(form.email, form.password);
         if (data) {
             app.user = data;
             goto("/");

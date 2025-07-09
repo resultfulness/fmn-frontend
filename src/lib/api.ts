@@ -1,13 +1,13 @@
-import type { Cart, CartSearch, Carts } from "./types";
+import app from "./app.svelte";
+import type { Cart, CartSearch, Carts, User, UserPatch } from "./types";
 
 const API_URL = "https://localhost:5000";
 
 async function apiFetch(
     endpoint: string,
-    method?: "GET" | "POST",
+    method?: "GET" | "POST" | "PATCH" | "DELETE",
     body?: object,
 ) {
-    if (!fetch) fetch = window.fetch;
     const r = await fetch(`${API_URL}${endpoint}`, {
         method: method || "GET",
         body: JSON.stringify(body) || undefined,
@@ -26,26 +26,35 @@ async function apiFetch(
 }
 
 const api = {
-    async getUser() {
-        try {
-            return await apiFetch("/users/me");
-        } catch (e) {
-            console.error(e.message);
+    users: {
+        async me() {
+            try {
+                return await apiFetch("/users/me");
+            } catch (e) {
+                console.error(e.message);
+            }
+        },
+        async login(email: string, password: string) {
+            return await apiFetch(
+                "/users/login",
+                "POST",
+                { email, password }
+            );
+        },
+        async register(email: string, password: string) {
+            return await apiFetch(
+                "/users/register",
+                "POST",
+                { email, password }
+            );
+        },
+        async patch(newUser: UserPatch) {
+            return await apiFetch(
+                `/users/${app.user?.user_id}`,
+                "PATCH",
+                newUser
+            )
         }
-    },
-    async login(email: string, password: string) {
-        return await apiFetch(
-            "/users/login",
-            "POST",
-            { email, password }
-        );
-    },
-    async register(email: string, password: string) {
-        return await apiFetch(
-            "/users/register",
-            "POST",
-            { email, password }
-        );
     },
     async getCarts(): Promise<Carts> {
         return await apiFetch("/carts/search");

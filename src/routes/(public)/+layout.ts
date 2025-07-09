@@ -5,7 +5,7 @@ import type { LayoutLoad } from "./$types";
 
 export const load: LayoutLoad = async () => {
     if (auth.token) {
-        const user = await api.getUser();
+        const user = await api.users.me();
         if (!user) {
             auth.clear();
             goto("/login");

@@ -5,8 +5,9 @@ interface ButtonProps {
     onclick?: () => void;
     children: Snippet;
     type?: "button" | "submit" | "reset" | "link";
-    style?: "primary" | "secondary";
+    style?: "primary" | "secondary" | "transparent";
     href?: string;
+    fillwidth?: boolean;
 }
 
 let {
@@ -15,6 +16,7 @@ let {
     type = "submit",
     style = "primary",
     href,
+    fillwidth = false,
 }: ButtonProps = $props();
 </script>
 
@@ -24,30 +26,38 @@ let {
         class="button"
         class:button--primary={style === "primary"}
         class:button--secondary={style === "secondary"}
+        class:button--transparent={style === "transparent"}
+        class:button--fillwidth={fillwidth}
     >
         {@render children()}
     </a>
 {:else}
-<button
-    {onclick}
-    {type}
-    class="button"
-    class:button--primary={style === "primary"}
-    class:button--secondary={style === "secondary"}
->
-    {@render children()}
-</button>
+    <button
+        {onclick}
+        {type}
+        class="button"
+        class:button--primary={style === "primary"}
+        class:button--secondary={style === "secondary"}
+        class:button--transparent={style === "transparent"}
+        class:button--fillwidth={fillwidth}
+    >
+        {@render children()}
+    </button>
 {/if}
 
 <style>
 .button {
-    width: 100%;
     padding: 1rem;
     border-radius: 0.5rem;
     border: 0;
     cursor: pointer;
     text-decoration: none;
-    text-align: center;
+    display: grid;
+    place-items: center;
+}
+
+.button--fillwidth {
+    width: 100%;
 }
 
 .button--primary {
@@ -72,6 +82,10 @@ let {
 
 .button--secondary:hover {
     text-decoration: underline;
+}
+
+.button--transparent {
+    background-color: transparent;
 }
 
 </style>

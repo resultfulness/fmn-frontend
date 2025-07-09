@@ -5,6 +5,12 @@ export type User = {
     username: string;
 }
 
+export type UserPatch = {
+    email?: string;
+    username?: string;
+    password?: string;
+}
+
 export type Carts = {
     carts: CartSearch[];
     count: number;

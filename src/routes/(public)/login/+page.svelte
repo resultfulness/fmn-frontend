@@ -30,7 +30,7 @@ async function handleSubmit(e: SubmitEvent) {
     }
 
     try {
-        const data = await api.login(form.email, form.password);
+        const data = await api.users.login(form.email, form.password);
         if (data) {
             app.user = data;
             goto("/");
@@ -62,7 +62,7 @@ async function handleSubmit(e: SubmitEvent) {
             error={form.error.password}
         />
         <div class="form__submit">
-            <Button>login</Button>
+            <Button fillwidth>login</Button>
         </div>
         <Separator text="or" spacing="0.5rem"/>
         <Button style="secondary" type="link" href="/register">register here</Button>
