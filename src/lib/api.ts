@@ -1,5 +1,5 @@
 import app from "./app.svelte";
-import type { Cart, Carts, Items, UserPatch } from "./types";
+import type { Cart, Carts, Item, Items, UserPatch } from "./types";
 
 const API_URL = "https://localhost:5000";
 
@@ -15,7 +15,8 @@ async function apiFetch(
     method?: "GET" | "POST" | "PATCH" | "DELETE",
     body?: object,
 ) {
-    const r = await fetch(`${API_URL}${endpoint}`, {
+    if (!api.fetch_fn) api.fetch_fn = window.fetch;
+    const r = await api.fetch_fn(`${API_URL}${endpoint}`, {
         method: method || "GET",
         body: JSON.stringify(body) || undefined,
         headers: { "Content-Type": "application/json" },
@@ -33,6 +34,7 @@ async function apiFetch(
 }
 
 const api = {
+    fetch_fn: window.fetch,
     users: {
         async me() {
             return await apiFetch("/users/me");
@@ -70,6 +72,13 @@ const api = {
     items: {
         async getAll(): Promise<Items> {
             return await apiFetch("/items/search");
+        },
+        async patch(newItem: Item) {
+            return await apiFetch(
+                `/items/${newItem.item_id}`,
+                "PATCH",
+                { name: newItem.name, icon: newItem.icon },
+            );
         }
     },
     recipes: {},

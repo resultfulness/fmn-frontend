@@ -4,7 +4,8 @@ import auth from "$lib/auth.svelte";
 import type { LayoutLoad } from "./$types";
 import { showToast } from "$lib/components/toast.svelte";
 
-export const load: LayoutLoad = async () => {
+export const load: LayoutLoad = async ({ fetch }) => {
+    api.fetch_fn = fetch;
     if (auth.token) {
         try {
             await api.users.me();

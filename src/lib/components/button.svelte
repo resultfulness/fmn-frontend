@@ -5,7 +5,7 @@ interface ButtonProps {
     onclick?: () => void;
     children: Snippet;
     type?: "button" | "submit" | "reset" | "link";
-    style?: "primary" | "secondary" | "transparent";
+    style?: "primary" | "secondary" | "icon";
     href?: string;
     fillwidth?: boolean;
     disabled?: boolean;
@@ -28,7 +28,7 @@ let {
         class="button"
         class:button--primary={style === "primary"}
         class:button--secondary={style === "secondary"}
-        class:button--transparent={style === "transparent"}
+        class:button--icon={style === "icon"}
         class:button--fillwidth={fillwidth}
         style:pointer-events={disabled ? "none" : "all"}
         class:button--disabled={disabled}
@@ -43,7 +43,7 @@ let {
         class="button"
         class:button--primary={style === "primary"}
         class:button--secondary={style === "secondary"}
-        class:button--transparent={style === "transparent"}
+        class:button--icon={style === "icon"}
         class:button--fillwidth={fillwidth}
     >
         {@render children()}
@@ -57,8 +57,7 @@ let {
     border: 0;
     cursor: pointer;
     text-decoration: none;
-    display: grid;
-    place-items: center;
+    text-align: center;
 }
 
 .button--fillwidth {
@@ -80,21 +79,22 @@ let {
 }
 
 .button--secondary {
-    background-color: var(--color-background);
-    border: 2px solid var(--color-muted);
-    color: var(--color-muted);
+    background-color: var(--color-surface0);
+    border: 2px solid var(--color-outline);
+    color: var(--color-outline);
 }
 
 .button--secondary:hover {
     text-decoration: underline;
 }
 
-.button--transparent {
+.button--icon {
     background-color: transparent;
+    padding: 0;
 }
 
 .button:disabled, .button--disabled {
     background-color: var(--color-muted);
-    color: var(--color-background);
+    color: var(--color-surface0);
 }
 </style>

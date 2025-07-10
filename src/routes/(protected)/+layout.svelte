@@ -4,12 +4,21 @@ import app from "$lib/app.svelte";
 import type { LayoutProps } from "./$types";
 let { children }: LayoutProps = $props();
 import { page } from "$app/state";
+import { setContext } from "svelte";
+
+let header = $state({
+    text: ""
+});
+
+setContext("header", header)
 
 let path = $derived(page.url.pathname);
 </script>
 
 <div class="page">
-    <header></header>
+    <header>
+        <h1>{header.text}</h1>
+    </header>
     <main>{@render children()}</main>
     <footer>
         <nav class="main-nav">
@@ -20,8 +29,9 @@ let path = $derived(page.url.pathname);
                         class="main-nav__link"
                         class:main-nav__link--active={path.startsWith("/carts")}
                     >
-                        <Icon name="shopping_cart" />
-                        carts
+                        <div class="main-nav__link__icon">
+                            <Icon name="shopping_cart" />
+                        </div>
                     </a>
                 </li>
                 <li class="main-nav__item">
@@ -31,8 +41,9 @@ let path = $derived(page.url.pathname);
 
                         class:main-nav__link--active={path === "/recipes"}
                     >
-                        <Icon name="restaurant" />
-                        recipes
+                        <div class="main-nav__link__icon">
+                            <Icon name="restaurant" />
+                        </div>
                     </a>
                 </li>
                 {#if app.user?.role === "admin"}
@@ -42,8 +53,9 @@ let path = $derived(page.url.pathname);
                             class="main-nav__link"
                             class:main-nav__link--active={path === "/items"}
                         >
-                            <Icon name="kitchen" />
-                            items
+                            <div class="main-nav__link__icon">
+                                <Icon name="kitchen" />
+                            </div>
                         </a>
                     </li>
                 {/if}
@@ -53,8 +65,9 @@ let path = $derived(page.url.pathname);
                         class="main-nav__link"
                         class:main-nav__link--active={path === "/profile"}
                     >
-                        <Icon name="person" />
-                        profile
+                        <div class="main-nav__link__icon">
+                            <Icon name="person" />
+                        </div>
                     </a>
                 </li>
             </ul>
@@ -67,19 +80,28 @@ let path = $derived(page.url.pathname);
     height: 100vh;
     height: 100dvh;
 
+    background-color: var(--color-surface0);
     display: flex;
     flex-direction: column;
 }
 
+header {
+    padding-inline: 1rem;
+    background-color: var(--color-background);
+}
+
 main {
+    position: relative;
     flex: 1;
     overflow: auto;
-    width: min(100% - 2rem, 720px);
-    margin: 1rem auto;
+    width: min(100%, 720px);
+    margin-inline: auto;
+    padding: 1rem;
+    background-color: var(--color-surface0);
 }
 
 footer {
-    background-color: var(--color-surface0);
+    background-color: var(--color-background);
 }
 
 .main-nav__list {
@@ -87,7 +109,7 @@ footer {
     padding: 0;
     margin: 0 auto;
     display: flex;
-    max-width: 360px;
+    max-width: 300px;
 }
 
 .main-nav__item {
@@ -95,16 +117,23 @@ footer {
 }
 
 .main-nav__link {
-    display: grid;
-    place-items: center;
+    display: block;
     text-decoration: none;
     color: var(--color-muted);
-    padding: 1rem;
-    gap: 0.25rem;
-    font-size: 14px;
+    padding: 1rem 0.5rem 1rem;
+}
+
+.main-nav__link__icon {
+    width: 100%;
+    padding-block: 0.25rem;
 }
 
 .main-nav__link--active {
-    color: var(--color-text);
+    color: var(--color-background);
+}
+
+.main-nav__link--active .main-nav__link__icon {
+    background-color: var(--color-primary);
+    border-radius: 100vw;
 }
 </style>

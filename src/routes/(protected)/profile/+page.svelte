@@ -7,6 +7,9 @@ import api, { ApiError } from "$lib/api";
 import auth from "$lib/auth.svelte";
 import { goto } from "$app/navigation";
 import { showToast } from "$lib/components/toast.svelte";
+import { getContext } from "svelte";
+
+getContext("header").text = "profile";
 
 let user = $derived(app.user!);
 
@@ -56,20 +59,11 @@ async function handleSubmit(e: SubmitEvent) {
                 break;
         }
     }
-
 }
 </script>
 
-<h1 title={user.username}>
-    {user.username}
-</h1>
 <section class="card card--info">
     <h2 class="card__title">info</h2>
-    <div class="card--info__edit">
-        <Button style="transparent" onclick={() => {editMode = !editMode}}>
-            <Icon name="edit" />
-        </Button>
-    </div>
     <span>role: {user.role}</span>
     {#if editMode}
         <form class="card--info__form" onsubmit={handleSubmit}>
@@ -114,7 +108,12 @@ async function handleSubmit(e: SubmitEvent) {
         </form>
     {:else}
         <div class="card--info__details">
-            <h3 class="card--info__details__title">details</h3>
+            <div class="card--info__details__header">
+                <h3 class="card--info__details__title">details</h3>
+                <Button style="icon" onclick={() => {editMode = !editMode}}>
+                    <Icon name="edit" />
+                </Button>
+            </div>
 
             <table class="card--info__details__table">
                 <tbody>
@@ -149,15 +148,9 @@ async function handleSubmit(e: SubmitEvent) {
 </Button>
 
 <style>
-h1 {
-    text-align: center;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
 .card {
     position: relative;
-    background-color: var(--color-surface0);
+    background-color: var(--color-surface1);
     padding: 1rem;
     border-radius: 1rem;
     margin-bottom: 1rem;
@@ -166,12 +159,6 @@ h1 {
 .card__title {
     margin: 0;
     margin-bottom: 1rem;
-}
-
-.card--info__edit {
-    position: absolute;
-    top: 0.25rem;
-    right: 0.25rem;
 }
 
 .card--info__form {
@@ -187,6 +174,12 @@ h1 {
     display: flex;
     gap: 1rem;
     margin-top: 1.5rem;
+}
+
+.card--info__details__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .card--info__details__table {

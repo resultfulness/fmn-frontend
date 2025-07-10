@@ -1,9 +1,12 @@
 <script lang="ts">
-    import { showToast } from "$lib/components/toast.svelte";
+import { showToast } from "$lib/components/toast.svelte";
+import { getContext } from "svelte";
 import type { PageProps } from "./$types";
 
 let { data }: PageProps = $props();
 let { carts } = data;
+
+getContext("header").text = "carts";
 </script>
 
 {#if carts.count < 1}
@@ -37,7 +40,7 @@ let { carts } = data;
 
 .card {
     padding: 1rem;
-    background-color: var(--color-surface0);
+    background-color: var(--color-surface1);
     border-radius: 1rem;
     display: flex;
     justify-content: space-between;
@@ -46,7 +49,7 @@ let { carts } = data;
 }
 
 .card:hover {
-    background-color: var(--color-surface1);
+    background-color: var(--color-surface2);
 }
 
 .card__title {

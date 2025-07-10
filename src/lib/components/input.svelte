@@ -7,6 +7,7 @@ interface InputProps {
     value: string;
     required?: boolean;
     error?: string;
+    ariaLabel?: string;
 }
 
 let {
@@ -17,6 +18,7 @@ let {
     required,
     value = $bindable(),
     error,
+    ariaLabel,
 }: InputProps = $props();
 </script>
 
@@ -31,9 +33,10 @@ let {
         {placeholder}
         {id}
         {required}
+        aria-label={ariaLabel}
         bind:value
-        class="input-group__input"
-        class:input-group__input--error={error}
+        class="input"
+        class:input--error={error}
     />
     {#if error}
         <span class="input-group__error">{error}</span>
@@ -46,19 +49,23 @@ let {
     gap: 0.5rem;
 }
 
-.input-group__input {
+.input {
     padding: 0.75rem;
     border-radius: 0.5rem;
-    border: 2px solid var(--color-muted);
-    background-color: var(--color-surface1);
+    border: 2px solid var(--color-outline);
+    background-color: var(--color-surface0);
 }
 
-.input-group__input:focus {
+.input:focus {
     outline: 0;
     border: 2px solid var(--color-primary);
 }
 
-.input-group__input--error {
+.input::placeholder {
+    color: var(--color-outline);
+}
+
+.input--error {
     border: 2px solid var(--color-error) !important;
 }
 

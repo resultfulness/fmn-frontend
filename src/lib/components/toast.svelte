@@ -56,7 +56,7 @@ import Icon from "./icon.svelte";
     border-radius: 1rem;
     display: flex;
     align-items: center;
-    background-color: var(--color-muted);
+    background-color: var(--color-surface2);
     color: var(--color-text);
     box-shadow: 0 1px 4px 0 rgb(0 0 0 / 0.1);
 }

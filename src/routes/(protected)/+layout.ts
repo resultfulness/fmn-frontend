@@ -6,6 +6,8 @@ import type { LayoutLoad } from "./$types";
 import { showToast } from "$lib/components/toast.svelte";
 
 export const load: LayoutLoad = async ({ url, fetch }) => {
+    api.fetch_fn = fetch;
+
     if (!auth.token) {
         goto("/login");
     } else {

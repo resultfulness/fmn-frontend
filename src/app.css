@@ -2,14 +2,13 @@
     --color-primary: mediumorchid;
     --color-primary-light: #e28fdf;
     --color-muted: #6d4a6d;
+    --color-outline: #906290;
     --color-error: #da7470;
     --color-error-fg: #000;
-    --color-background: #0d030c;
-    --color-surface0: #130512;
-    --color-surface1: #190718;
-    --color-surface2: #220921;
-    --color-surface3: #2c0b2b;
-    --color-surface4: #3c0f3a;
+    --color-background: #1e101e;
+    --color-surface0: #231023;
+    --color-surface1: #2e142c;
+    --color-surface2: #341832;
     --color-text: #eeeafe;
 }
 

@@ -3,6 +3,7 @@ import { error } from "@sveltejs/kit";
 import type { PageLoad } from "./$types";
 
 export const load: PageLoad = async ({ params }) => {
+    api.fetch_fn = fetch;
     if (!Number.isInteger(+params.id)) {
         error(422, `cart id '${params.id}' not a number`);
     }
