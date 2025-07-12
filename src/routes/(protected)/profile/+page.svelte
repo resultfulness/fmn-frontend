@@ -49,7 +49,7 @@ async function handleSubmit(e: SubmitEvent) {
         if (data) {
             app.user = data;
             showToast("data saved");
-            // goto("/profile");
+            editMode = false;
         }
     } catch (e) {
         const ae = e as ApiError;
@@ -66,8 +66,8 @@ async function handleSubmit(e: SubmitEvent) {
     <h2 class="card__title">info</h2>
     <span>role: {user.role}</span>
     {#if editMode}
-        <form class="card--info__form" onsubmit={handleSubmit}>
-            <h3 class="card--info__form__title">details (edit)</h3>
+        <form class="form card--info__form" onsubmit={handleSubmit}>
+            <h3 class="form__title">details (edit)</h3>
 
             <Input
                 id="username"
@@ -92,7 +92,7 @@ async function handleSubmit(e: SubmitEvent) {
                 error={form.error.newPassword}
             />
 
-            <div class="card--info__form__actions">
+            <div class="form__submit">
                 <Button
                     fillwidth
                     style="secondary"
@@ -162,24 +162,14 @@ async function handleSubmit(e: SubmitEvent) {
 }
 
 .card--info__form {
-    display: grid;
-    gap: 1rem;
-}
-
-.card--info__form__title {
-    margin-bottom: 0;
-}
-
-.card--info__form__actions {
-    display: flex;
-    gap: 1rem;
-    margin-top: 1.5rem;
+    margin-top: 1rem;
 }
 
 .card--info__details__header {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    margin-block: 1rem;
 }
 
 .card--info__details__table {
@@ -189,7 +179,7 @@ async function handleSubmit(e: SubmitEvent) {
 }
 
 .card--info__details__title {
-    margin-bottom: 1rem;
+    margin: 0;
 }
 
 .card--info__details__entry {

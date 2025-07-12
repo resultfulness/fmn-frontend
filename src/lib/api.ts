@@ -1,7 +1,7 @@
 import app from "./app.svelte";
 import type { Cart, Carts, Item, Items, UserPatch } from "./types";
 
-const API_URL = "https://localhost:5000";
+const API_URL = "https://192.168.0.3:5000";
 
 export class ApiError extends Error {
     constructor(message: string, public status: number) {

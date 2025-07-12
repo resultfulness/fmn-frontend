@@ -5,7 +5,7 @@ interface ButtonProps {
     onclick?: () => void;
     children: Snippet;
     type?: "button" | "submit" | "reset" | "link";
-    style?: "primary" | "secondary" | "icon";
+    style?: "primary" | "secondary" | "alert" | "icon";
     href?: string;
     fillwidth?: boolean;
     disabled?: boolean;
@@ -28,6 +28,7 @@ let {
         class="button"
         class:button--primary={style === "primary"}
         class:button--secondary={style === "secondary"}
+        class:button--alert={style === "alert"}
         class:button--icon={style === "icon"}
         class:button--fillwidth={fillwidth}
         style:pointer-events={disabled ? "none" : "all"}
@@ -43,6 +44,7 @@ let {
         class="button"
         class:button--primary={style === "primary"}
         class:button--secondary={style === "secondary"}
+        class:button--alert={style === "alert"}
         class:button--icon={style === "icon"}
         class:button--fillwidth={fillwidth}
     >
@@ -96,5 +98,10 @@ let {
 .button:disabled, .button--disabled {
     background-color: var(--color-muted);
     color: var(--color-surface0);
+}
+
+.button--alert {
+    background-color: var(--color-error);
+    color: var(--color-error-text);
 }
 </style>

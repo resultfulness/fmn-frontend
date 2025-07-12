@@ -4,7 +4,7 @@
     --color-muted: #6d4a6d;
     --color-outline: #906290;
     --color-error: #da7470;
-    --color-error-fg: #000;
+    --color-error-text: #000;
     --color-background: #1e101e;
     --color-surface0: #231023;
     --color-surface1: #2e142c;
@@ -29,4 +29,10 @@ body {
 
 button, input {
     font: inherit;
+}
+
+hr {
+    width: 100%;
+    margin-block: 1.5rem;
+    border-color: var(--color-outline);
 }

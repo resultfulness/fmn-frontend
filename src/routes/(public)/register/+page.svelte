@@ -57,7 +57,7 @@ async function handleSubmit(e: SubmitEvent) {
 <svelte:head>register | forget me not</svelte:head>
 
 <main>
-    <form onsubmit={handleSubmit} class="form">
+    <form onsubmit={handleSubmit} class="form form--auth">
         <h1 class="form__title">register</h1>
         <Input
             id="email"
@@ -94,19 +94,5 @@ main {
     height: 100dvh;
     display: grid;
     place-items: center;
-}
-
-.form {
-    display: grid;
-    width: min(100% - 4rem, 400px);
-    gap: 1rem;
-}
-
-.form__title {
-    margin: 0;
-}
-
-.form__submit {
-    margin-top: 0.5rem;
 }
 </style>

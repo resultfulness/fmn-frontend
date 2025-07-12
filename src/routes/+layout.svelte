@@ -1,5 +1,6 @@
 <script>
 import "../app.css";
+import "$lib/style/form.css";
 import Toast, { showToast } from "$lib/components/toast.svelte";
 
 let { children } = $props();

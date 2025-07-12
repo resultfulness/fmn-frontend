@@ -1,0 +1,24 @@
+.form {
+    display: grid;
+    gap: 1rem;
+}
+
+.form--auth {
+    width: min(100% - 4rem, 400px);
+}
+
+.form__title {
+    margin: 0;
+}
+
+.form__submit {
+    margin-top: 0.5rem;
+    display: flex;
+    gap: 1rem;
+}
+
+.form__header {
+    display: flex;
+    justify-content: space-between;
+    margin-block: 0.5rem;
+}
