@@ -36,3 +36,8 @@ export type Item = {
     name: string;
     icon: string;
 }
+
+export type ItemNew = {
+    name: string;
+    icon: string;
+}

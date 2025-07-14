@@ -1,5 +1,5 @@
 import app from "./app.svelte";
-import type { Cart, Carts, Item, Items, UserPatch } from "./types";
+import type { Cart, Carts, Item, ItemNew, Items, UserPatch } from "./types";
 
 const API_URL = "https://192.168.0.3:5000";
 
@@ -79,6 +79,19 @@ const api = {
                 "PATCH",
                 { name: newItem.name, icon: newItem.icon },
             );
+        },
+        async new(newItem: ItemNew) {
+            return await apiFetch(
+                "/items/new",
+                "POST",
+                { name: newItem.name, icon: newItem.icon },
+            )
+        },
+        async delete(itemId: number) {
+            return await apiFetch(
+                `/items/${itemId}`,
+                "DELETE",
+            )
         }
     },
     recipes: {},

@@ -1,7 +1,8 @@
 <script>
 import "../app.css";
 import "$lib/style/form.css";
-import Toast, { showToast } from "$lib/components/toast.svelte";
+import Confirm from "$lib/components/confirm.svelte";
+import Toast from "$lib/components/toast.svelte";
 
 let { children } = $props();
 </script>
@@ -9,3 +10,4 @@ let { children } = $props();
 {@render children()}
 
 <Toast />
+<Confirm />

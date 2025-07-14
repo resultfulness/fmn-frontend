@@ -1,7 +1,11 @@
 <script lang="ts">
+import { invalidateAll } from "$app/navigation";
+import api, { ApiError } from "$lib/api";
 import Button from "$lib/components/button.svelte";
+import { showConfirm } from "$lib/components/confirm.svelte";
 import Icon from "$lib/components/icon.svelte";
 import Input from "$lib/components/input.svelte";
+import { showToast } from "$lib/components/toast.svelte";
 import type { Item } from "$lib/types";
 import type { PageProps } from "./$types";
 import { getContext } from "svelte";
@@ -52,8 +56,48 @@ $effect(() => {
         noedit();
     }
 });
-function handleEdit(e: SubmitEvent) {
+let submitDisabled = $derived(
+    (form.name === itemEdited?.name || form.name.length < 1) &&
+    (form.icon === itemEdited?.icon || form.icon.length < 1)
+);
+async function handleEdit(e: SubmitEvent) {
     e.preventDefault();
+    if (!itemEdited) return;
+    form.error = { name: "", icon: "" };
+
+    if (!form.name) {
+        form.error.name = "name required";
+        return;
+    }
+
+    if (!form.icon) {
+        form.error.icon = "icon required";
+        return;
+    }
+
+    if (submitDisabled) {
+        return;
+    }
+
+    try {
+        const data = await api.items.patch({
+            item_id: itemEdited.item_id,
+            name: form.name,
+            icon: form.icon,
+        });
+        if (data) {
+            noedit();
+            showToast("item saved");
+            await invalidateAll();
+        }
+    } catch (e) {
+        const ae = e as ApiError;
+        switch (ae.status) {
+            case 409:
+                form.error.name = ae.message;
+                break;
+        }
+    }
 }
 // }}}
 
@@ -69,12 +113,58 @@ function noadd() {
     form.icon = "";
     form.error = { name: "", icon: "" };
 }
-function handleAdd(e: SubmitEvent) {
+async function handleAdd(e: SubmitEvent) {
     e.preventDefault();
+    form.error = { name: "", icon: "" };
+
+    if (!form.name) {
+        form.error.name = "name required";
+        return;
+    }
+
+    if (!form.icon) {
+        form.error.icon = "icon required";
+        return;
+    }
+
+    try {
+        const data = await api.items.new({
+            name: form.name,
+            icon: form.icon,
+        });
+        if (data) {
+            noadd();
+            showToast("item added");
+            await invalidateAll();
+        }
+    } catch (e) {
+        const ae = e as ApiError;
+        switch (ae.status) {
+            case 409:
+                form.error.name = ae.message;
+                break;
+        }
+    }
 }
 // }}}
 
-function handleDelete() {}
+async function handleDelete() {
+    if (!itemEdited) return;
+
+    if (await showConfirm(
+        "delete confirmation",
+        `are you sure you want to remove '${itemEdited.name}'?`
+    )) {
+        try {
+            const data = await api.items.delete(itemEdited.item_id);
+            if (data) {
+                noedit();
+                showToast(`item '${data.name}' deleted`);
+                await invalidateAll();
+            }
+        } catch (e) {}
+    }
+}
 </script>
 
 <ul class="items__list">
@@ -126,7 +216,7 @@ function handleDelete() {}
                 >
                     delete
                 </Button>
-                <Button fillwidth>save</Button>
+                <Button fillwidth disabled={submitDisabled}>save</Button>
             </div>
         </form>
         <hr />
