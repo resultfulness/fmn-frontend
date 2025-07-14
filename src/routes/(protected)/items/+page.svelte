@@ -310,6 +310,17 @@ async function handleDelete() {
     border-top-right-radius: 1rem;
 }
 
+@media screen and (max-height: 600px) {
+    .form {
+        position: fixed;
+        inset: 0;
+        background-color: var(--color-surface2);
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+    }
+}
+
 .items__search-add {
     display: grid;
     grid-template-columns: 1fr auto;
