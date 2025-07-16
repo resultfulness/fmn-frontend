@@ -2,12 +2,13 @@
 import Icon from "$lib/components/icon.svelte";
 import app from "$lib/app.svelte";
 import type { LayoutProps } from "./$types";
-let { children }: LayoutProps = $props();
 import { page } from "$app/state";
 import { setContext } from "svelte";
 
+let { children }: LayoutProps = $props();
+
 let header = $state({
-    text: ""
+    text: "",
 });
 
 setContext("header", header)
@@ -88,6 +89,8 @@ let path = $derived(page.url.pathname);
 header {
     padding-inline: 1rem;
     background-color: var(--color-background);
+    display: flex;
+    justify-content: space-between;
 }
 
 main {

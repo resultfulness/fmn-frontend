@@ -1,3 +1,4 @@
+import { goto } from "$app/navigation";
 import api from "$lib/api";
 import type { PageLoad } from "./$types";
 

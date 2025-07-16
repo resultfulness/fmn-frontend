@@ -1,7 +1,6 @@
 import app from "./app.svelte";
 import type { Cart, Carts, Item, ItemNew, Items, UserPatch } from "./types";
-
-const API_URL = "https://192.168.0.3:5000";
+import { PUBLIC_API_URL } from "$env/static/public";
 
 export class ApiError extends Error {
     constructor(message: string, public status: number) {
@@ -12,11 +11,11 @@ export class ApiError extends Error {
 
 async function apiFetch(
     endpoint: string,
-    method?: "GET" | "POST" | "PATCH" | "DELETE",
+    method?: "GET" | "POST" | "PATCH" | "PUT" | "DELETE",
     body?: object,
 ) {
     if (!api.fetch_fn) api.fetch_fn = window.fetch;
-    const r = await api.fetch_fn(`${API_URL}${endpoint}`, {
+    const r = await api.fetch_fn(`${PUBLIC_API_URL}${endpoint}`, {
         method: method || "GET",
         body: JSON.stringify(body) || undefined,
         headers: { "Content-Type": "application/json" },
@@ -68,6 +67,12 @@ const api = {
         async get(id: number): Promise<Cart> {
             return await apiFetch(`/carts/${id}`)
         },
+        async putItem(id: number, item_id: number): Promise<Cart> {
+            return await apiFetch(`/carts/${id}/${item_id}`, "PUT");
+        },
+        async deleteItem(id: number, item_id: number): Promise<Cart> {
+            return await apiFetch(`/carts/${id}/${item_id}`, "DELETE")
+        }
     },
     items: {
         async getAll(): Promise<Items> {
@@ -88,10 +93,7 @@ const api = {
             )
         },
         async delete(itemId: number) {
-            return await apiFetch(
-                `/items/${itemId}`,
-                "DELETE",
-            )
+            return await apiFetch(`/items/${itemId}`, "DELETE")
         }
     },
     recipes: {},

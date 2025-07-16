@@ -25,11 +25,6 @@ getContext("header").text = "carts";
 {/if}
 
 <style>
-.empty-label {
-    color: var(--color-muted);
-    text-align: center;
-}
-
 .card-list {
     list-style-type: none;
     padding: 0;

@@ -2,7 +2,7 @@ import api, { ApiError } from "$lib/api";
 import { error } from "@sveltejs/kit";
 import type { PageLoad } from "./$types";
 
-export const load: PageLoad = async ({ params }) => {
+export const load: PageLoad = async ({ params, fetch }) => {
     api.fetch_fn = fetch;
     if (!Number.isInteger(+params.id)) {
         error(422, `cart id '${params.id}' not a number`);
@@ -11,7 +11,8 @@ export const load: PageLoad = async ({ params }) => {
 
     try {
         const cart = await api.carts.get(id);
-        return { cart };
+        const items = await api.items.getAll();
+        return { cart, items };
     } catch (e) {
         const ae = e as ApiError;
         switch (ae.status) {
