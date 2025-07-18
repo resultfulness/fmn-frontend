@@ -60,6 +60,7 @@ let {
     cursor: pointer;
     text-decoration: none;
     text-align: center;
+    color: inherit;
 }
 
 .button--fillwidth {

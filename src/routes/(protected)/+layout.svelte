@@ -3,22 +3,44 @@ import Icon from "$lib/components/icon.svelte";
 import app from "$lib/app.svelte";
 import type { LayoutProps } from "./$types";
 import { page } from "$app/state";
-import { setContext } from "svelte";
+import { setContext, type Snippet } from "svelte";
+import { beforeNavigate } from "$app/navigation";
 
 let { children }: LayoutProps = $props();
 
-let header = $state({
-    text: "",
+let header: {
+    title: string,
+    left?: Snippet,
+    right?: Snippet
+} = $state({
+    title: "forget me not",
+    left: undefined,
+    right: undefined
 });
 
 setContext("header", header)
+
+beforeNavigate(() => {
+    header.left = undefined;
+    header.right = undefined;
+});
 
 let path = $derived(page.url.pathname);
 </script>
 
 <div class="page">
     <header>
-        <h1>{header.text}</h1>
+        <div class="header__layout">
+            <div class="header__left">
+                {@render header.left?.()}
+            </div>
+            <div class="header__center">
+                <h1 class="header__title">{header.title}</h1>
+            </div>
+            <div class="header__right">
+                {@render header.right?.()}
+            </div>
+        </div>
     </header>
     <main>{@render children()}</main>
     <footer>
@@ -87,10 +109,24 @@ let path = $derived(page.url.pathname);
 }
 
 header {
-    padding-inline: 1rem;
     background-color: var(--color-background);
-    display: flex;
-    justify-content: space-between;
+}
+
+.header__layout {
+    display: grid;
+    grid-template-columns: 48px 1fr 48px;
+    align-items: center;
+    padding: 1rem;
+    width: min(100%, 720px);
+    margin-inline: auto;
+}
+
+.header__center {
+    text-align: center;
+}
+
+.header__title {
+    margin: 0;
 }
 
 main {
@@ -129,6 +165,8 @@ footer {
 .main-nav__link__icon {
     width: 100%;
     padding-block: 0.25rem;
+    display: grid;
+    place-items: center;
 }
 
 .main-nav__link--active {

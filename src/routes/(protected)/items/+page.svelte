@@ -14,14 +14,7 @@ let { data }: PageProps = $props();
 let { items } = $derived(data);
 
 const header = getContext("header");
-
-$effect(() => {
-    if (searchterm) {
-        header.text = `items for '${searchterm}'`
-    } else {
-        header.text = "items";
-    }
-})
+header.title = "items";
 
 let searchterm = $state("");
 let filteredItems = $derived(items.items.filter(i => i.name.includes(searchterm)));

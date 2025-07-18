@@ -9,7 +9,7 @@ import { goto } from "$app/navigation";
 import { showToast } from "$lib/components/toast.svelte";
 import { getContext } from "svelte";
 
-getContext("header").text = "profile";
+getContext("header").title = "profile";
 
 let user = $derived(app.user!);
 

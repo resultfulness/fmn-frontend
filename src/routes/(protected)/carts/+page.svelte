@@ -1,12 +1,12 @@
 <script lang="ts">
-import { showToast } from "$lib/components/toast.svelte";
 import { getContext } from "svelte";
 import type { PageProps } from "./$types";
 
 let { data }: PageProps = $props();
 let { carts } = data;
 
-getContext("header").text = "carts";
+const header = getContext("header");
+header.title = "carts";
 </script>
 
 {#if carts.count < 1}

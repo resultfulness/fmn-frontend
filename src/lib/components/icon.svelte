@@ -16,5 +16,6 @@
 .material-symbols-rounded {
   display: grid;
   place-items: center;
+  width: fit-content;
 }
 </style>

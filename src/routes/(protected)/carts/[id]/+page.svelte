@@ -2,7 +2,8 @@
 import { getContext } from "svelte";
 import type { PageProps } from "./$types";
 import api from "$lib/api";
-import { invalidateAll } from "$app/navigation";
+import Button from "$lib/components/button.svelte";
+import Icon from "$lib/components/icon.svelte";
 
 let { data }: PageProps = $props();
 let cart = $derived(data.cart!);
@@ -12,8 +13,6 @@ let restitems = $derived(items.items.filter(i =>
     !cartitems.some(ci => ci.item_id === i.item_id)
 ));
 
-getContext("header").text = data.cart!.name;
-
 async function add(id: number) {
     cart = await api.carts.putItem(data.cart!.cart_id, id);
 }
@@ -21,7 +20,17 @@ async function add(id: number) {
 async function remove(id: number) {
     cart = await api.carts.deleteItem(data.cart!.cart_id, id);
 }
+
+const header = getContext("header");
+header.title = cart.name;
+header.left = back;
 </script>
+
+{#snippet back()}
+    <Button style="icon" type="link" href="/carts">
+        <Icon name="arrow_back" size={32}/>
+    </Button>
+{/snippet}
 
 <h2>cart</h2>
 {#if cartitems.length > 0}
