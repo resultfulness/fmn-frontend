@@ -9,9 +9,9 @@ let { data }: PageProps = $props();
 let cart = $derived(data.cart!);
 let cartitems = $derived(cart.items);
 let items = $derived(data.items!);
-let restitems = $derived(items.items.filter(i =>
-    !cartitems.some(ci => ci.item_id === i.item_id)
-));
+let restitems = $derived(
+    items.items.filter(i => !cartitems.some(ci => ci.item_id === i.item_id))
+);
 
 async function add(id: number) {
     cart = await api.carts.putItem(data.cart!.cart_id, id);
@@ -29,13 +29,13 @@ header.right = opts;
 
 {#snippet back()}
     <Button style="icon" type="link" href="/carts">
-        <Icon name="arrow_back" size={32}/>
+        <Icon name="arrow_back" size={32} />
     </Button>
 {/snippet}
 
 {#snippet opts()}
     <Button style="icon" onclick={() => {}}>
-        <Icon name="edit" size={28}/>
+        <Icon name="edit" size={28} />
     </Button>
 {/snippet}
 
@@ -117,5 +117,4 @@ header.right = opts;
 
 .item--rest__button {
 }
-
 </style>

@@ -12,8 +12,8 @@ let form = $state({
     error: {
         email: "",
         password: "",
-    }
-})
+    },
+});
 
 async function handleSubmit(e: SubmitEvent) {
     e.preventDefault();
@@ -43,7 +43,6 @@ async function handleSubmit(e: SubmitEvent) {
                 break;
         }
     }
-
 }
 </script>
 
@@ -69,8 +68,10 @@ async function handleSubmit(e: SubmitEvent) {
         <div class="form__submit">
             <Button fillwidth>login</Button>
         </div>
-        <Separator text="or" spacing="0.5rem"/>
-        <Button style="secondary" type="link" href="/register">register here</Button>
+        <Separator text="or" spacing="0.5rem" />
+        <Button style="secondary" type="link" href="/register">
+            register here
+        </Button>
     </form>
 </main>
 

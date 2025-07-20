@@ -4,7 +4,6 @@ import app from "$lib/app.svelte";
 import auth from "$lib/auth.svelte";
 import type { LayoutLoad } from "./$types";
 import { showToast } from "$lib/components/toast.svelte";
-import { getContext } from "svelte";
 
 export const load: LayoutLoad = async ({ url, fetch }) => {
     api.fetch_fn = fetch;

@@ -9,16 +9,16 @@ import { beforeNavigate } from "$app/navigation";
 let { children }: LayoutProps = $props();
 
 let header: {
-    title: string,
-    left?: Snippet,
-    right?: Snippet
+    title: string;
+    left?: Snippet;
+    right?: Snippet;
 } = $state({
     title: "forget me not",
     left: undefined,
-    right: undefined
+    right: undefined,
 });
 
-setContext("header", header)
+setContext("header", header);
 
 beforeNavigate(() => {
     header.left = undefined;
@@ -61,7 +61,6 @@ let path = $derived(page.url.pathname);
                     <a
                         href="/recipes"
                         class="main-nav__link"
-
                         class:main-nav__link--active={path === "/recipes"}
                     >
                         <div class="main-nav__link__icon">

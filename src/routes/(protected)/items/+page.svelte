@@ -17,7 +17,9 @@ const header = getContext("header");
 header.title = "items";
 
 let searchterm = $state("");
-let filteredItems = $derived(items.items.filter(i => i.name.includes(searchterm)));
+let filteredItems = $derived(
+    items.items.filter(i => i.name.includes(searchterm))
+);
 
 let form = $state({
     name: "",
@@ -51,7 +53,7 @@ $effect(() => {
 });
 let submitDisabled = $derived(
     (form.name === itemEdited?.name || form.name.length < 1) &&
-    (form.icon === itemEdited?.icon || form.icon.length < 1)
+        (form.icon === itemEdited?.icon || form.icon.length < 1)
 );
 async function handleEdit(e: SubmitEvent) {
     e.preventDefault();
@@ -144,10 +146,12 @@ async function handleAdd(e: SubmitEvent) {
 async function handleDelete() {
     if (!itemEdited) return;
 
-    if (await showConfirm(
-        "delete confirmation",
-        `are you sure you want to remove '${itemEdited.name}'?`
-    )) {
+    if (
+        await showConfirm(
+            "delete confirmation",
+            `are you sure you want to remove '${itemEdited.name}'?`
+        )
+    ) {
         try {
             const data = await api.items.delete(itemEdited.item_id);
             if (data) {
@@ -161,22 +165,22 @@ async function handleDelete() {
 </script>
 
 <ul class="items__list">
-{#if filteredItems.length > 0}
-    {#each filteredItems as item}
-        <li class="item">
-            <img
-                src={item.icon}
-                alt={item.name + " icon"}
-                class="item__icon"
-            />
-            <p class="item__name">{item.name}</p>
-            <div class="item__edit">
-                <Button style="icon" onclick={() => edit(item)}>
-                    <Icon name="edit" size={28} />
-                </Button>
-            </div>
-        </li>
-    {/each}
+    {#if filteredItems.length > 0}
+        {#each filteredItems as item}
+            <li class="item">
+                <img
+                    src={item.icon}
+                    alt={item.name + " icon"}
+                    class="item__icon"
+                />
+                <p class="item__name">{item.name}</p>
+                <div class="item__edit">
+                    <Button style="icon" onclick={() => edit(item)}>
+                        <Icon name="edit" size={28} />
+                    </Button>
+                </div>
+            </li>
+        {/each}
     {:else}
         <p class="empty-label">no items for '{searchterm}'</p>
     {/if}
@@ -186,12 +190,8 @@ async function handleDelete() {
         <form class="form" onsubmit={handleEdit}>
             <header class="form__header">
                 <h2 class="form__title">editing item</h2>
-                <Button
-                    type="button"
-                    onclick={noedit}
-                    style="icon"
-                >
-                    <Icon name="close" size={32}/>
+                <Button type="button" onclick={noedit} style="icon">
+                    <Icon name="close" size={32} />
                 </Button>
             </header>
             <Input
@@ -221,12 +221,8 @@ async function handleDelete() {
         <form class="form" onsubmit={handleAdd}>
             <header class="form__header">
                 <h2 class="form__title">adding item</h2>
-                <Button
-                    type="button"
-                    onclick={noadd}
-                    style="icon"
-                >
-                    <Icon name="close" size={32}/>
+                <Button type="button" onclick={noadd} style="icon">
+                    <Icon name="close" size={32} />
                 </Button>
             </header>
             <Input
@@ -255,7 +251,7 @@ async function handleDelete() {
             ariaLabel="search for items..."
         />
         <Button onclick={add} style="icon">
-            <Icon name="add" size={32}/>
+            <Icon name="add" size={32} />
         </Button>
     </div>
 </section>

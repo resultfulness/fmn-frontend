@@ -27,10 +27,9 @@ let form = $state({
 
 let submitDisabled = $derived(
     (form.email === user.email || form.email.length < 1) &&
-    (form.username === user.username || form.username.length < 1) &&
-    form.newPassword.length < 1
+        (form.username === user.username || form.username.length < 1) &&
+        form.newPassword.length < 1
 );
-
 
 async function handleSubmit(e: SubmitEvent) {
     e.preventDefault();
@@ -44,7 +43,8 @@ async function handleSubmit(e: SubmitEvent) {
         const data = await api.users.patch({
             username: form.username.length > 0 ? form.username : undefined,
             email: form.email.length > 0 ? form.email : undefined,
-            password: form.newPassword.length > 0 ? form.newPassword : undefined
+            password:
+                form.newPassword.length > 0 ? form.newPassword : undefined,
         });
         if (data) {
             app.user = data;
@@ -96,21 +96,26 @@ async function handleSubmit(e: SubmitEvent) {
                 <Button
                     fillwidth
                     style="secondary"
-                    onclick={() => editMode = false}
+                    onclick={() => {
+                        editMode = false;
+                    }}
                     type="button"
                 >
                     cancel
                 </Button>
-                <Button fillwidth disabled={submitDisabled}>
-                    save
-                </Button>
+                <Button fillwidth disabled={submitDisabled}>save</Button>
             </div>
         </form>
     {:else}
         <div class="card--info__details">
             <div class="card--info__details__header">
                 <h3 class="card--info__details__title">details</h3>
-                <Button style="icon" onclick={() => {editMode = !editMode}}>
+                <Button
+                    style="icon"
+                    onclick={() => {
+                        editMode = !editMode;
+                    }}
+                >
                     <Icon name="edit" />
                 </Button>
             </div>
@@ -135,15 +140,17 @@ async function handleSubmit(e: SubmitEvent) {
                     </tr>
                 </tbody>
             </table>
-
         </div>
     {/if}
 </section>
-<Button fillwidth onclick={() => {
-    auth.clear();
-    goto("/login");
-    showToast("logged out");
-}}>
+<Button
+    fillwidth
+    onclick={() => {
+        auth.clear();
+        goto("/login");
+        showToast("logged out");
+    }}
+>
     logout
 </Button>
 
@@ -192,5 +199,7 @@ async function handleSubmit(e: SubmitEvent) {
     align-items: center;
 }
 
-td { padding: 0; }
+td {
+    padding: 0;
+}
 </style>
