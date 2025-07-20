@@ -9,16 +9,16 @@ import { beforeNavigate } from "$app/navigation";
 let { children }: LayoutProps = $props();
 
 let header: {
-    title: string,
-    left?: Snippet,
-    right?: Snippet
+    title: string;
+    left?: Snippet;
+    right?: Snippet;
 } = $state({
     title: "forget me not",
     left: undefined,
-    right: undefined
+    right: undefined,
 });
 
-setContext("header", header)
+setContext("header", header);
 
 beforeNavigate(() => {
     header.left = undefined;
@@ -48,7 +48,7 @@ let path = $derived(page.url.pathname);
             <ul class="main-nav__list">
                 <li class="main-nav__item">
                     <a
-                        href="/carts"
+                        href={`/carts/${localStorage.getItem("cart_id") ?? ""}`}
                         class="main-nav__link"
                         class:main-nav__link--active={path.startsWith("/carts")}
                     >
@@ -61,7 +61,6 @@ let path = $derived(page.url.pathname);
                     <a
                         href="/recipes"
                         class="main-nav__link"
-
                         class:main-nav__link--active={path === "/recipes"}
                     >
                         <div class="main-nav__link__icon">

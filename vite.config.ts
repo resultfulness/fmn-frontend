@@ -7,6 +7,9 @@ export default defineConfig(({ mode }) => {
 	return {
 		plugins: [sveltekit()],
 		server: {
+			hmr: {
+				host: env.VITE_HOST
+			},
 			https: {
 				key: readFileSync(`${env.VITE_CERT_PATH}/${env.VITE_HOST}.key`),
 				cert: readFileSync(`${env.VITE_CERT_PATH}/${env.VITE_HOST}.crt`),

@@ -12,6 +12,7 @@ export const load: PageLoad = async ({ params, fetch }) => {
     try {
         const cart = await api.carts.get(id);
         const items = await api.items.getAll();
+        localStorage.setItem("cart_id", params.id)
         return { cart, items };
     } catch (e) {
         const ae = e as ApiError;

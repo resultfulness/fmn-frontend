@@ -27,6 +27,7 @@ export const load: LayoutLoad = async ({ url, fetch }) => {
         }
     }
     if (url.pathname === "/") {
-        goto("/carts");
+        const id = localStorage.getItem("cart_id")
+        goto(`/carts/${id ?? ''}`);
     }
 }

@@ -4,14 +4,20 @@ import type { PageProps } from "./$types";
 import api from "$lib/api";
 import Button from "$lib/components/button.svelte";
 import Icon from "$lib/components/icon.svelte";
+import Input from "$lib/components/input.svelte";
+import { afterNavigate } from "$app/navigation";
 
 let { data }: PageProps = $props();
 let cart = $derived(data.cart!);
 let cartitems = $derived(cart.items);
 let items = $derived(data.items!);
-let restitems = $derived(items.items.filter(i =>
-    !cartitems.some(ci => ci.item_id === i.item_id)
-));
+let searchQuery = $state("");
+
+let restitems = $derived(
+    items.items
+        .filter((i) => !cartitems.some((ci) => ci.item_id === i.item_id))
+        .filter((i) => i.name.includes(searchQuery)),
+);
 
 async function add(id: number) {
     cart = await api.carts.putItem(data.cart!.cart_id, id);
@@ -21,21 +27,23 @@ async function remove(id: number) {
     cart = await api.carts.deleteItem(data.cart!.cart_id, id);
 }
 
-const header = getContext("header");
-header.title = cart.name;
-header.left = back;
-header.right = opts;
+const header: any = getContext("header");
+afterNavigate(() => {
+    header.title = cart.name;
+    header.left = back;
+    header.right = opts;
+});
 </script>
 
 {#snippet back()}
     <Button style="icon" type="link" href="/carts">
-        <Icon name="arrow_back" size={32}/>
+        <Icon name="arrow_back" size={32} />
     </Button>
 {/snippet}
 
 {#snippet opts()}
     <Button style="icon" onclick={() => {}}>
-        <Icon name="edit" size={28}/>
+        <Icon name="edit" size={28} />
     </Button>
 {/snippet}
 
@@ -63,6 +71,13 @@ header.right = opts;
 {/if}
 
 <h2>items</h2>
+<div class="items-search">
+    <Input
+        id="cart-search-items"
+        placeholder="search for items..."
+        bind:value={searchQuery}
+    />
+</div>
 <ul class="items-list">
     {#each restitems as item}
         <li class="item item--rest">
@@ -90,6 +105,9 @@ header.right = opts;
     grid-template-columns: repeat(4, 1fr);
     gap: 0.5rem;
 }
+.item__icon {
+    filter: invert();
+}
 
 @media screen and (max-width: 500px) {
     .items-list {
@@ -110,12 +128,18 @@ header.right = opts;
     font-weight: 600;
     background-color: transparent;
     border: 2px solid var(--color-outline);
+    border-radius: 1rem;
 }
 
 .item--cart__button {
+    background-color: var(--color-surface2);
 }
 
 .item--rest__button {
+    background-color: var(--color-surface1);
 }
 
+.items-search {
+    margin-bottom: 1rem;
+}
 </style>
