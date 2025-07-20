@@ -17,7 +17,7 @@ header.title = "carts";
             <li class="card-list__item">
                 <a class="card" href={`/carts/${cart.cart_id}`}>
                     <h2 class="card__title">{cart.name}</h2>
-                    <img src={cart.icon} alt="cart icon" class="card__icon">
+                    <img src={cart.icon} alt="cart icon" class="card__icon" />
                 </a>
             </li>
         {/each}

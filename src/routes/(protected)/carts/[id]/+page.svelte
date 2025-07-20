@@ -15,8 +15,8 @@ let searchQuery = $state("");
 
 let restitems = $derived(
     items.items
-        .filter((i) => !cartitems.some((ci) => ci.item_id === i.item_id))
-        .filter((i) => i.name.includes(searchQuery)),
+        .filter(i => !cartitems.some(ci => ci.item_id === i.item_id))
+        .filter(i => i.name.includes(searchQuery))
 );
 
 async function add(id: number) {

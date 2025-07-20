@@ -14,12 +14,12 @@ let form = $state({
         email: "",
         password: "",
         password2: "",
-    }
-})
+    },
+});
 
 async function handleSubmit(e: SubmitEvent) {
     e.preventDefault();
-    form.error = { email: "", password: "", password2: ""};
+    form.error = { email: "", password: "", password2: "" };
 
     if (!form.email) {
         form.error.email = "email required";
@@ -50,7 +50,6 @@ async function handleSubmit(e: SubmitEvent) {
                 break;
         }
     }
-
 }
 </script>
 
@@ -83,7 +82,7 @@ async function handleSubmit(e: SubmitEvent) {
         <div class="form__submit">
             <Button fillwidth>register</Button>
         </div>
-        <Separator text="or" spacing="0.5rem"/>
+        <Separator text="or" spacing="0.5rem" />
         <Button style="secondary" type="link" href="/login">login here</Button>
     </form>
 </main>
