@@ -161,6 +161,7 @@ async function handleDelete() {
 </script>
 
 <ul class="items__list">
+{#if filteredItems.length > 0}
     {#each filteredItems as item}
         <li class="item">
             <img
@@ -176,6 +177,9 @@ async function handleDelete() {
             </div>
         </li>
     {/each}
+    {:else}
+        <p class="empty-label">no items for '{searchterm}'</p>
+    {/if}
 </ul>
 <section class="items__actions">
     {#if editMode}
@@ -258,7 +262,6 @@ async function handleDelete() {
 
 <style>
 .items__list {
-    flex: 1;
     list-style-type: none;
     padding: 0;
     margin: 0;

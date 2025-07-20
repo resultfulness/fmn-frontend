@@ -24,11 +24,18 @@ async function remove(id: number) {
 const header = getContext("header");
 header.title = cart.name;
 header.left = back;
+header.right = opts;
 </script>
 
 {#snippet back()}
     <Button style="icon" type="link" href="/carts">
         <Icon name="arrow_back" size={32}/>
+    </Button>
+{/snippet}
+
+{#snippet opts()}
+    <Button style="icon" onclick={() => {}}>
+        <Icon name="edit" size={28}/>
     </Button>
 {/snippet}
 

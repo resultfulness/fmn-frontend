@@ -125,6 +125,11 @@ header {
     text-align: center;
 }
 
+.header__right {
+    display: flex;
+    justify-content: right;
+}
+
 .header__title {
     margin: 0;
 }

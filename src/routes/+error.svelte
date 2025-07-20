@@ -10,7 +10,7 @@ import { page } from "$app/state";
 
         <ul>
             <li>status code: {page.status}</li>
-            <li>details: {page.error.message}</li>
+            <li>details: {page.error?.message}</li>
         </ul>
     </main>
 </div>
