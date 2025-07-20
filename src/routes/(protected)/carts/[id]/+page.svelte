@@ -105,17 +105,17 @@ afterNavigate(() => {
     grid-template-columns: repeat(4, 1fr);
     gap: 0.5rem;
 }
-.item__icon {
-    filter: invert();
-}
 
 @media screen and (max-width: 500px) {
     .items-list {
         grid-template-columns: repeat(3, 1fr);
     }
     .item__icon {
-        width: 64px;
+        max-width: 64px;
     }
+}
+.item__icon {
+    width: 96px;
 }
 
 .item__button {
@@ -127,7 +127,6 @@ afterNavigate(() => {
     place-items: center;
     font-weight: 600;
     background-color: transparent;
-    border: 2px solid var(--color-outline);
     border-radius: 1rem;
 }
 

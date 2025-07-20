@@ -57,6 +57,5 @@ header.title = "carts";
     aspect-ratio: 1 / 1;
     object-fit: cover;
     border-radius: 0.5rem;
-    /* filter: invert(); */
 }
 </style>

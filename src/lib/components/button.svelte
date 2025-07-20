@@ -61,6 +61,7 @@ let {
     text-decoration: none;
     text-align: center;
     color: inherit;
+    transition: background-color 200ms;
 }
 
 .button--fillwidth {

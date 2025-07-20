@@ -282,7 +282,6 @@ async function handleDelete() {
 .item__icon {
     width: 32px;
     object-fit: cover;
-    filter: invert();
 }
 
 .item__edit {
