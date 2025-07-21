@@ -10,6 +10,8 @@
     --color-surface1: #273049;
     --color-surface2: #2f3b5a;
     --color-text: #eafafe;
+    --color-success: #a1da70;
+    --color-warn: #daa970;
 }
 
 *, *::before, *::after {

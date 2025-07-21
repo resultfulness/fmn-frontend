@@ -48,7 +48,7 @@ async function handleSubmit(e: SubmitEvent) {
         });
         if (data) {
             app.user = data;
-            showToast("data saved");
+            showToast("data saved", "success");
             editMode = false;
         }
     } catch (e) {
@@ -148,7 +148,7 @@ async function handleSubmit(e: SubmitEvent) {
     onclick={() => {
         auth.clear();
         goto("/login");
-        showToast("logged out");
+        showToast("logged out", "info");
     }}
 >
     logout

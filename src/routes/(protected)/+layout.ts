@@ -20,7 +20,7 @@ export const load: LayoutLoad = async ({ url, fetch }) => {
                 case 401:
                     auth.clear();
                     goto("/login");
-                    showToast("session expired. please login again", 10000);
+                    showToast("session expired. please login again", "info", 10000);
                     break;
             }
         }

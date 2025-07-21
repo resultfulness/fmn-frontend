@@ -1,4 +1,6 @@
 <script lang="ts">
+import Icon from "./icon.svelte";
+
 interface InputProps {
     type?: string;
     placeholder?: string;
@@ -8,6 +10,7 @@ interface InputProps {
     required?: boolean;
     error?: string;
     ariaLabel?: string;
+    showClear?: boolean;
 }
 
 let {
@@ -19,6 +22,7 @@ let {
     value = $bindable(),
     error,
     ariaLabel,
+    showClear = false,
 }: InputProps = $props();
 </script>
 
@@ -41,10 +45,16 @@ let {
     {#if error}
         <span class="input-group__error">{error}</span>
     {/if}
+    {#if showClear && value.length > 0}
+        <button class="input__clear" onclick={() => (value = "")}>
+            <Icon name="close" />
+        </button>
+    {/if}
 </div>
 
 <style>
 .input-group {
+    position: relative;
     display: grid;
     gap: 0.5rem;
 }
@@ -73,4 +83,13 @@ let {
     color: var(--color-error);
 }
 
+.input__clear {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    padding-inline: 1rem;
+    background: transparent;
+    border: 0;
+}
 </style>

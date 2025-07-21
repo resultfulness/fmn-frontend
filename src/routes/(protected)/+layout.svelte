@@ -144,6 +144,8 @@ main {
 }
 
 footer {
+    position: relative;
+    z-index: 2;
     background-color: var(--color-background);
 }
 
