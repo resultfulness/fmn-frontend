@@ -97,9 +97,13 @@ afterNavigate(() => {
 </ul>
 
 <style>
+h2 {
+    padding-inline: 1rem;
+}
+
 .items-list {
     list-style-type: none;
-    padding: 0;
+    padding: 1rem;
     margin: 0;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -139,6 +143,6 @@ afterNavigate(() => {
 }
 
 .items-search {
-    margin-bottom: 1rem;
+    margin: 0 1rem 1rem;
 }
 </style>

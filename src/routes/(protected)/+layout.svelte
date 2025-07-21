@@ -139,8 +139,10 @@ main {
     overflow: auto;
     width: min(100%, 720px);
     margin-inline: auto;
-    padding: 1rem;
     background-color: var(--color-surface0);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 footer {

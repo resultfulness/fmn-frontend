@@ -289,8 +289,9 @@ function nosearch() {
 
 <style>
 .items__list {
+    flex: 1;
     list-style-type: none;
-    padding: 0;
+    padding: 1rem;
     margin: 0;
     overflow: auto;
 }
@@ -324,10 +325,6 @@ function nosearch() {
 .fake-search {
     background-color: var(--color-surface2);
     padding: 1rem;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
     border-top-left-radius: 1rem;
     border-top-right-radius: 1rem;
     display: grid;

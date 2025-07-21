@@ -30,6 +30,8 @@ header.title = "carts";
     padding: 0;
     margin: 0;
     display: grid;
+    padding: 1rem;
+    overflow: scroll;
     gap: 1rem;
 }
 

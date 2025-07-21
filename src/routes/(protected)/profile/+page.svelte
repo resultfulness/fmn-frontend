@@ -143,16 +143,18 @@ async function handleSubmit(e: SubmitEvent) {
         </div>
     {/if}
 </section>
-<Button
-    fillwidth
-    onclick={() => {
-        auth.clear();
-        goto("/login");
-        showToast("logged out", "info");
-    }}
->
-    logout
-</Button>
+<div class="logout">
+    <Button
+        fillwidth
+        onclick={() => {
+            auth.clear();
+            goto("/login");
+            showToast("logged out", "info");
+        }}
+    >
+        logout
+    </Button>
+</div>
 
 <style>
 .card {
@@ -160,7 +162,7 @@ async function handleSubmit(e: SubmitEvent) {
     background-color: var(--color-surface1);
     padding: 1rem;
     border-radius: 1rem;
-    margin-bottom: 1rem;
+    margin: 1rem 1rem 0;
 }
 
 .card__title {
@@ -201,5 +203,9 @@ async function handleSubmit(e: SubmitEvent) {
 
 td {
     padding: 0;
+}
+
+.logout {
+    margin: 1rem;
 }
 </style>
