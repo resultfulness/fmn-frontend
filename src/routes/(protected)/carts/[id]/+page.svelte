@@ -20,10 +20,16 @@ let restitems = $derived(
 );
 
 async function add(id: number) {
+    // cart = await api.carts.putItem(data.cart!.cart_id, id);
+    cartitems = [...cartitems, restitems.find(i => i.item_id === id)!];
+    restitems = restitems.filter(i => i.item_id !== id);
     cart = await api.carts.putItem(data.cart!.cart_id, id);
 }
 
 async function remove(id: number) {
+    // cart = await api.carts.deleteItem(data.cart!.cart_id, id);
+    restitems = [...restitems, cartitems.find(i => i.item_id === id)!];
+    cartitems = cartitems.filter(i => i.item_id !== id);
     cart = await api.carts.deleteItem(data.cart!.cart_id, id);
 }
 
