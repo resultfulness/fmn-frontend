@@ -20,14 +20,13 @@ let restitems = $derived(
 );
 
 async function add(id: number) {
-    // cart = await api.carts.putItem(data.cart!.cart_id, id);
+    searchQuery = "";
     cartitems = [...cartitems, restitems.find(i => i.item_id === id)!];
     restitems = restitems.filter(i => i.item_id !== id);
     cart = await api.carts.putItem(data.cart!.cart_id, id);
 }
 
 async function remove(id: number) {
-    // cart = await api.carts.deleteItem(data.cart!.cart_id, id);
     restitems = [...restitems, cartitems.find(i => i.item_id === id)!];
     cartitems = cartitems.filter(i => i.item_id !== id);
     cart = await api.carts.deleteItem(data.cart!.cart_id, id);
@@ -96,7 +95,7 @@ afterNavigate(() => {
                     alt={item.name + " icon"}
                     class="item__icon"
                 />
-                {item.name}
+                <p class="item__name">{item.name}</p>
             </button>
         </li>
     {/each}
@@ -116,16 +115,12 @@ h2 {
     gap: 0.5rem;
 }
 
-@media screen and (max-width: 500px) {
-    .items-list {
-        grid-template-columns: repeat(3, 1fr);
-    }
-    .item__icon {
-        max-width: 64px;
-    }
-}
 .item__icon {
-    width: 96px;
+    width: 64px;
+}
+
+.item__name {
+    margin: 0;
 }
 
 .item__button {
@@ -133,11 +128,28 @@ h2 {
     aspect-ratio: 1 / 1;
     border: 0;
     cursor: pointer;
-    display: grid;
-    place-items: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 1rem;
     font-weight: 600;
     background-color: transparent;
     border-radius: 1rem;
+    padding: 2rem;
+}
+
+@media screen and (max-width: 570px) {
+    .items-list {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    .item__icon {
+        max-width: 48px;
+    }
+    .item__button {
+        padding: 0.75rem;
+        gap: 0.5rem;
+    }
 }
 
 .item--cart__button {
