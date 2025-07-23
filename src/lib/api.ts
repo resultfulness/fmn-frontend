@@ -1,5 +1,5 @@
 import app from "./app.svelte";
-import type { Cart, Carts, Item, ItemNew, Items, UserPatch } from "./types";
+import type { Cart, CartPatch, Carts, Item, ItemNew, Items, UserPatch } from "./types";
 import { PUBLIC_API_URL } from "$env/static/public";
 
 export class ApiError extends Error {
@@ -57,7 +57,7 @@ const api = {
                 `/users/${app.user?.user_id}`,
                 "PATCH",
                 newUser
-            )
+            );
         }
     },
     carts: {
@@ -65,13 +65,23 @@ const api = {
             return await apiFetch("/carts/search");
         },
         async get(id: number): Promise<Cart> {
-            return await apiFetch(`/carts/${id}`)
+            return await apiFetch(`/carts/${id}`);
         },
         async putItem(id: number, item_id: number): Promise<Cart> {
             return await apiFetch(`/carts/${id}/${item_id}`, "PUT");
         },
         async deleteItem(id: number, item_id: number): Promise<Cart> {
-            return await apiFetch(`/carts/${id}/${item_id}`, "DELETE")
+            return await apiFetch(`/carts/${id}/${item_id}`, "DELETE");
+        },
+        async patch(newCart: CartPatch): Promise<Cart> {
+            return await apiFetch(
+                `/carts/${newCart.cart_id}`,
+                "PATCH",
+                { name: newCart.name, icon: newCart.icon }
+            );
+        },
+        async delete(id: number): Promise<Cart> {
+            return await apiFetch(`/carts/${id}`, "DELETE");
         }
     },
     items: {
@@ -90,7 +100,7 @@ const api = {
                 "/items/new",
                 "POST",
                 { name: newItem.name, icon: newItem.icon },
-            )
+            );
         },
         async delete(itemId: number): Promise<Item> {
             return await apiFetch(`/items/${itemId}`, "DELETE");

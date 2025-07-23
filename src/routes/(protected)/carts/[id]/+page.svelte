@@ -3,14 +3,18 @@ import { getContext } from "svelte";
 import type { PageProps } from "./$types";
 import api from "$lib/api";
 import Button from "$lib/components/button.svelte";
+import Drawer from "$lib/components/drawer.svelte";
 import Icon from "$lib/components/icon.svelte";
 import Input from "$lib/components/input.svelte";
-import { afterNavigate } from "$app/navigation";
+import { afterNavigate, goto, invalidateAll } from "$app/navigation";
+import Separator from "$lib/components/separator.svelte";
+import { showConfirm } from "$lib/components/confirm.svelte";
+import { showToast } from "$lib/components/toast.svelte";
 
 let { data }: PageProps = $props();
-let cart = $derived(data.cart!);
+let { cart } = $derived(data);
 let cartitems = $derived(cart.items);
-let items = $derived(data.items!);
+let { items } = $derived(data);
 let searchQuery = $state("");
 
 let restitems = $derived(
@@ -32,6 +36,75 @@ async function remove(id: number) {
     cart = await api.carts.deleteItem(data.cart!.cart_id, id);
 }
 
+let form = $state({
+    name: "",
+    icon: "",
+    error: { name: "", icon: "" },
+});
+let submitDisabled = $derived(
+    (form.name === cart.name && form.icon === cart.icon) ||
+        (!form.name && !form.icon)
+);
+let editDrawer: HTMLDialogElement = $state()!;
+function edit() {
+    form.name = cart.name;
+    form.icon = cart.icon;
+    editDrawer.show();
+}
+function noedit() {
+    editDrawer.close();
+    form.error.name = "";
+    form.error.icon = "";
+}
+async function handleEdit(e: SubmitEvent) {
+    e.preventDefault();
+    form.error = { name: "", icon: "" };
+
+    if (!form.name) {
+        form.error.name = "name required";
+        return;
+    }
+
+    if (!form.icon) {
+        form.error.icon = "icon required";
+        return;
+    }
+
+    if (submitDisabled) {
+        return;
+    }
+
+    try {
+        const res = await api.carts.patch({
+            cart_id: cart.cart_id,
+            name: form.name,
+            icon: form.icon,
+        });
+        if (res) {
+            noedit();
+            showToast("cart updated", "success");
+            header.title = res.name;
+            await invalidateAll();
+        }
+    } catch (e) {}
+}
+async function handleDelete() {
+    if (
+        await showConfirm(
+            "delete confirmation",
+            `are you sure you want to remove '${cart.name}'?`
+        )
+    ) {
+        try {
+            const res = await api.carts.delete(cart.cart_id);
+            if (res) {
+                showToast(`cart '${res.name}' deleted`, "success");
+                goto("/carts");
+            }
+        } catch (e) {}
+    }
+}
+
 const header: any = getContext("header");
 afterNavigate(() => {
     header.title = cart.name;
@@ -47,66 +120,103 @@ afterNavigate(() => {
 {/snippet}
 
 {#snippet opts()}
-    <Button style="icon" onclick={() => {}}>
+    <Button style="icon" onclick={edit}>
         <Icon name="edit" size={28} />
     </Button>
 {/snippet}
 
-<h2>cart</h2>
-{#if cartitems.length > 0}
-    <ul class="items-list">
-        {#each cartitems as item}
-            <li class="item item--cart">
+<section class="items items--cart">
+    <h2 class="items__title">cart</h2>
+    {#if cartitems.length > 0}
+        <ul class="items__list items--cart__list">
+            {#each cartitems as item}
+                <li class="items__list__item items--cart__list__item">
+                    <button
+                        onclick={() => remove(item.item_id)}
+                        class="items__list__item__button items--cart__list__item__button"
+                    >
+                        <img
+                            src={item.icon}
+                            alt={item.name + " icon"}
+                            class="items__list__item__icon items--cart__list__item__icon"
+                        />
+                        <p class="items__list__item__name">{item.name}</p>
+                    </button>
+                </li>
+            {/each}
+        </ul>
+    {:else}
+        <p class="empty-label">cart empty :)</p>
+    {/if}
+</section>
+
+<section class="items items--rest">
+    <h2 class="items__title">items</h2>
+    <div class="items__search">
+        <Input
+            id="cart-items-search"
+            placeholder="search for items..."
+            bind:value={searchQuery}
+        />
+    </div>
+    <ul class="items__list items--rest__list">
+        {#each restitems as item}
+            <li class="items__list__item items--rest__list__item">
                 <button
-                    onclick={() => remove(item.item_id)}
-                    class="item__button item--cart__button"
+                    onclick={() => add(item.item_id)}
+                    class="items__list__item__button items--rest__list__item__button"
                 >
                     <img
                         src={item.icon}
                         alt={item.name + " icon"}
-                        class="item__icon"
+                        class="items__list__item__icon items--rest__list__item__icon"
                     />
-                    {item.name}
+                    <p class="items__list__item__name">{item.name}</p>
                 </button>
             </li>
         {/each}
     </ul>
-{:else}
-    <p class="empty-label">cart empty :)</p>
-{/if}
+</section>
 
-<h2>items</h2>
-<div class="items-search">
-    <Input
-        id="cart-search-items"
-        placeholder="search for items..."
-        bind:value={searchQuery}
-    />
-</div>
-<ul class="items-list">
-    {#each restitems as item}
-        <li class="item item--rest">
-            <button
-                onclick={() => add(item.item_id)}
-                class="item__button item--rest__button"
-            >
-                <img
-                    src={item.icon}
-                    alt={item.name + " icon"}
-                    class="item__icon"
-                />
-                <p class="item__name">{item.name}</p>
-            </button>
-        </li>
-    {/each}
-</ul>
+<Drawer bind:ref={editDrawer} onclose={noedit}>
+    <div class="edit-drawer">
+        <form class="form" onsubmit={handleEdit}>
+            <header class="form__header">
+                <h2 class="form__title">editing {cart.name}</h2>
+            </header>
+            <Input
+                id="cart-name"
+                bind:value={form.name}
+                error={form.error.name}
+                label="name:"
+            />
+            <Input
+                id="cart-icon"
+                bind:value={form.icon}
+                error={form.error.icon}
+                label="icon:"
+            />
+            <div class="form__submit">
+                <Button fillwidth disabled={submitDisabled}>save</Button>
+            </div>
+        </form>
+        <Separator />
+        <Button fillwidth onclick={handleDelete} style="alert"
+            >delete cart</Button
+        >
+    </div>
+</Drawer>
 
 <style>
-h2 {
+.items__title {
     padding-inline: 1rem;
 }
 
-.items-list {
+.items__search {
+    margin: 0 1rem 1rem;
+}
+
+.items__list {
     list-style-type: none;
     padding: 1rem;
     margin: 0;
@@ -115,15 +225,15 @@ h2 {
     gap: 0.5rem;
 }
 
-.item__icon {
+.items__list__item__icon {
     width: 64px;
 }
 
-.item__name {
+.items__list__item__name {
     margin: 0;
 }
 
-.item__button {
+.items__list__item__button {
     width: 100%;
     aspect-ratio: 1 / 1;
     border: 0;
@@ -139,28 +249,29 @@ h2 {
     padding: 2rem;
 }
 
+.items--cart__list__item__button {
+    background-color: var(--color-surface2);
+}
+
+.items--rest__list__item__button {
+    background-color: var(--color-surface1);
+}
+
 @media screen and (max-width: 570px) {
-    .items-list {
+    .items__list {
         grid-template-columns: repeat(3, 1fr);
     }
-    .item__icon {
+    .items__list__item__icon {
         max-width: 48px;
     }
-    .item__button {
+    .items__list__item__button {
         padding: 0.75rem;
         gap: 0.5rem;
     }
 }
 
-.item--cart__button {
-    background-color: var(--color-surface2);
-}
-
-.item--rest__button {
-    background-color: var(--color-surface1);
-}
-
-.items-search {
-    margin: 0 1rem 1rem;
+.edit-drawer {
+    display: grid;
+    gap: 1rem;
 }
 </style>

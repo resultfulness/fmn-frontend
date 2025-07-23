@@ -1,10 +1,10 @@
 <script lang="ts">
 interface SeparatorProps {
-    text: string;
+    text?: string;
     spacing?: string;
 }
 let {
-    text,
+    text = "",
     spacing
 }: SeparatorProps = $props();
 </script>

@@ -14,10 +14,6 @@ import { getContext } from "svelte";
 
 let { data }: PageProps = $props();
 let { items } = $derived(data);
-
-const header = getContext("header");
-header.title = "items";
-
 let searchterm = $state("");
 let filteredItems = $derived(
     items.items.filter(i => i.name.includes(searchterm))
@@ -158,9 +154,7 @@ async function handleDelete(id: number) {
                 showToast(`item '${res.name}' deleted`, "success");
                 await invalidateAll();
             }
-        } catch (e) {
-            console.log(e?.toString());
-        }
+        } catch (e) {}
     }
 }
 // }}}
@@ -177,6 +171,9 @@ function nosearch() {
     searchDrawer.close();
 }
 // }}}
+
+const header = getContext("header");
+header.title = "items";
 </script>
 
 <ul class="items__list">

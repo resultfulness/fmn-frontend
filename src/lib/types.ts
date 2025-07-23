@@ -26,6 +26,12 @@ export type Cart = {
     items: Item[]
 } & CartSearch
 
+export type CartPatch = {
+    cart_id: number;
+    name?: string;
+    icon?: string;
+};
+
 export type Items = {
     items: Item[];
     count: number;
