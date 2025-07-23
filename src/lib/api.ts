@@ -92,8 +92,8 @@ const api = {
                 { name: newItem.name, icon: newItem.icon },
             )
         },
-        async delete(itemId: number) {
-            return await apiFetch(`/items/${itemId}`, "DELETE")
+        async delete(itemId: number): Promise<Item> {
+            return await apiFetch(`/items/${itemId}`, "DELETE");
         }
     },
     recipes: {},

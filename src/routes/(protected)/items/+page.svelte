@@ -141,8 +141,8 @@ async function handleAdd(e: SubmitEvent) {
 /// }}}
 
 // {{{ delete
-async function handleDelete() {
-    if (!itemEdited) return;
+async function handleDelete(id: number) {
+    if (itemEdited === undefined) return;
 
     if (
         await showConfirm(
@@ -151,13 +151,16 @@ async function handleDelete() {
         )
     ) {
         try {
-            const data = await api.items.delete(itemEdited.item_id);
-            if (data) {
+            filteredItems = filteredItems.filter(item => item.item_id !== id);
+            const res = await api.items.delete(id);
+            if (res) {
                 noedit();
-                showToast(`item '${data.name}' deleted`, "success");
+                showToast(`item '${res.name}' deleted`, "success");
                 await invalidateAll();
             }
-        } catch (e) {}
+        } catch (e) {
+            console.log(e?.toString());
+        }
     }
 }
 // }}}
@@ -253,7 +256,7 @@ function nosearch() {
                 fillwidth
                 style="alert"
                 type="button"
-                onclick={handleDelete}
+                onclick={() => handleDelete(itemEdited!.item_id)}
             >
                 delete
             </Button>
