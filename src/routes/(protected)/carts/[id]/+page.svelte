@@ -51,6 +51,7 @@ function edit() {
     form.name = cart.name;
     form.icon = cart.icon;
     editDrawer.show();
+    editDrawer.focus();
 }
 function noedit() {
     editDrawer.close();
@@ -192,7 +193,7 @@ afterNavigate(() => {
 
 <Drawer bind:ref={editDrawer} onclose={noedit}>
     <div class="edit-drawer">
-        <form class="form" onsubmit={handleEdit}>
+        <form class="form edit-drawer__form" onsubmit={handleEdit}>
             <header class="form__header">
                 <h2 class="form__title">editing {cart.name}</h2>
             </header>
@@ -209,7 +210,15 @@ afterNavigate(() => {
                 label="icon:"
             />
             <div class="form__submit">
-                <Button fillwidth disabled={submitDisabled}>save</Button>
+                <Button
+                    fillwidth
+                    disabled={submitDisabled}
+                    tooltip={submitDisabled
+                        ? "change something first!"
+                        : undefined}
+                >
+                    save
+                </Button>
             </div>
         </form>
         <Separator />
@@ -217,6 +226,9 @@ afterNavigate(() => {
             fillwidth
             onclick={handleSetDefault}
             disabled={app.defaultCartId === cart.cart_id}
+            tooltip={app.defaultCartId === cart.cart_id
+                ? "cart already default"
+                : undefined}
         >
             set as default cart
         </Button>
@@ -293,5 +305,19 @@ afterNavigate(() => {
 .edit-drawer {
     display: grid;
     gap: 1rem;
+}
+
+@media screen and (max-height: 560px) {
+    .edit-drawer__form {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: var(--color-surface2);
+        border-top-left-radius: 1rem;
+        border-top-right-radius: 1rem;
+        padding: 1rem;
+        z-index: 4;
+    }
 }
 </style>

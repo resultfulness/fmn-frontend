@@ -9,6 +9,7 @@ interface ButtonProps {
     href?: string;
     fillwidth?: boolean;
     disabled?: boolean;
+    tooltip?: string
 }
 
 let {
@@ -19,6 +20,7 @@ let {
     href,
     fillwidth = false,
     disabled = false,
+    tooltip,
 }: ButtonProps = $props();
 </script>
 
@@ -35,6 +37,9 @@ let {
         class:button--disabled={disabled}
     >
         {@render children()}
+        {#if tooltip}
+            <span class="button__tooltip">{tooltip}</span>
+        {/if}
     </a>
 {:else}
     <button
@@ -49,11 +54,15 @@ let {
         class:button--fillwidth={fillwidth}
     >
         {@render children()}
+        {#if tooltip}
+            <span class="button__tooltip">{tooltip}</span>
+        {/if}
     </button>
 {/if}
 
 <style>
 .button {
+    position: relative;
     padding: 1rem;
     border-radius: 0.5rem;
     border: 0;
@@ -62,6 +71,49 @@ let {
     text-align: center;
     color: inherit;
     transition: background-color 200ms;
+}
+
+.button__tooltip {
+    visibility: hidden;
+    opacity: 0;
+    background-color: #000;
+    color: #fff;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: fit-content;
+    padding: 0.25em 1em;
+    border-radius: 0.25em;
+    margin: 0em auto 0.75em;
+    position: absolute;
+    white-space: nowrap;
+    background-color: var(--color-text);
+    color: var(--color-background);
+    z-index: 8;
+    font-size: 0.875rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .button__tooltip {
+        transition: opacity 300ms;
+    }
+}
+
+.button__tooltip::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -0.5em;
+    border-width: 0.5em;
+    border-style: solid;
+    border-color: var(--color-text) transparent transparent transparent;
+    z-index: 8;
+}
+
+.button:hover .button__tooltip {
+    visibility: visible;
+    opacity: 1;
 }
 
 .button--fillwidth {

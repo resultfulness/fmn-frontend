@@ -60,6 +60,7 @@ async function handleSubmit(e: SubmitEvent) {
         }
     }
 }
+
 </script>
 
 <section class="card card--info">
@@ -103,7 +104,15 @@ async function handleSubmit(e: SubmitEvent) {
                 >
                     cancel
                 </Button>
-                <Button fillwidth disabled={submitDisabled}>save</Button>
+                <Button
+                    fillwidth
+                    disabled={submitDisabled}
+                    tooltip={submitDisabled
+                        ? "change something first!"
+                        : undefined}
+                >
+                    save
+                </Button>
             </div>
         </form>
     {:else}
@@ -146,6 +155,7 @@ async function handleSubmit(e: SubmitEvent) {
 <div class="logout">
     <Button
         fillwidth
+        tooltip="logout"
         onclick={() => {
             auth.clear();
             goto("/login");
@@ -172,6 +182,23 @@ async function handleSubmit(e: SubmitEvent) {
 
 .card--info__form {
     margin-top: 1rem;
+}
+
+@media screen and (max-height: 560px) {
+    .card--info__form {
+        position: fixed;
+        inset: 0;
+        overflow-x: hidden;
+        margin: 1rem;
+        background-color: var(--color-surface1);
+        border-radius: 1rem;
+        padding: 1rem;
+        z-index: 4;
+    }
+
+    .form__title {
+        display: none;
+    }
 }
 
 .card--info__details__header {

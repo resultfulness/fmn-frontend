@@ -257,7 +257,13 @@ header.title = "items";
             >
                 delete
             </Button>
-            <Button fillwidth disabled={submitDisabled}>save</Button>
+            <Button
+                fillwidth
+                disabled={submitDisabled}
+                tooltip={submitDisabled ? "change something first!" : undefined}
+            >
+                save
+            </Button>
         </div>
     </form>
 </Drawer>
