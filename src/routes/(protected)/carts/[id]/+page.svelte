@@ -10,6 +10,7 @@ import { afterNavigate, goto, invalidateAll } from "$app/navigation";
 import Separator from "$lib/components/separator.svelte";
 import { showConfirm } from "$lib/components/confirm.svelte";
 import { showToast } from "$lib/components/toast.svelte";
+import app from "$lib/app.svelte";
 
 let { data }: PageProps = $props();
 let { cart } = $derived(data);
@@ -99,10 +100,21 @@ async function handleDelete() {
             const res = await api.carts.delete(cart.cart_id);
             if (res) {
                 showToast(`cart '${res.name}' deleted`, "success");
+                if (app.defaultCartId === res.cart_id) {
+                    app.defaultCartId = null;
+                }
                 goto("/carts");
             }
         } catch (e) {}
     }
+}
+
+async function handleSetDefault() {
+    try {
+        await api.users.putDefaultCart(cart.cart_id);
+        app.defaultCartId = cart.cart_id;
+        showToast("cart set as default", "success");
+    } catch (e) {}
 }
 
 const header: any = getContext("header");
@@ -201,9 +213,17 @@ afterNavigate(() => {
             </div>
         </form>
         <Separator />
-        <Button fillwidth onclick={handleDelete} style="alert"
-            >delete cart</Button
+        <Button
+            fillwidth
+            onclick={handleSetDefault}
+            disabled={app.defaultCartId === cart.cart_id}
         >
+            set as default cart
+        </Button>
+        <Separator />
+        <Button fillwidth onclick={handleDelete} style="alert">
+            delete cart
+        </Button>
     </div>
 </Drawer>
 

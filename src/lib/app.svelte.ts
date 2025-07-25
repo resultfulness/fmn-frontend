@@ -1,9 +1,10 @@
 import type { User } from "./types";
 
 const app: {
-    user: User | null
+    user: User | null,
+    defaultCartId?: number | null,
 } = $state({
-    user: null
+    user: null,
 });
 
 export default app;

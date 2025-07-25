@@ -48,7 +48,7 @@ let path = $derived(page.url.pathname);
             <ul class="main-nav__list">
                 <li class="main-nav__item">
                     <a
-                        href={`/carts/${localStorage.getItem("cart_id") ?? ""}`}
+                        href={`/carts/${app.defaultCartId ?? ""}`}
                         class="main-nav__link"
                         class:main-nav__link--active={path.startsWith("/carts")}
                     >

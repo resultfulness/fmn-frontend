@@ -58,6 +58,12 @@ const api = {
                 "PATCH",
                 newUser
             );
+        },
+        async getDefaultCart(): Promise<Cart> {
+            return await apiFetch("/users/cart");
+        },
+        async putDefaultCart(id: number) {
+            return await apiFetch(`/users/cart/${id}`, "PUT");
         }
     },
     carts: {

@@ -3,6 +3,7 @@ import api, { ApiError } from "$lib/api";
 import auth from "$lib/auth.svelte";
 import type { LayoutLoad } from "./$types";
 import { showToast } from "$lib/components/toast.svelte";
+import { redirect } from "@sveltejs/kit";
 
 export const load: LayoutLoad = async ({ fetch }) => {
     api.fetch_fn = fetch;
@@ -19,6 +20,6 @@ export const load: LayoutLoad = async ({ fetch }) => {
                     break;
             }
         }
-        goto("/")
+        throw redirect(302, "/")
     }
 }
