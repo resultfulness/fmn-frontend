@@ -10,7 +10,8 @@ import Input from "$lib/components/input.svelte";
 import { showToast } from "$lib/components/toast.svelte";
 import type { Item } from "$lib/types";
 import type { PageProps } from "./$types";
-import { getContext } from "svelte";
+import { getContext, onMount } from "svelte";
+import unfocusOnMobileKeyboardHidden from "$lib/mobile-unfocus";
 
 let { data }: PageProps = $props();
 let { items } = $derived(data);
@@ -174,6 +175,10 @@ function nosearch() {
 
 const header = getContext("header");
 header.title = "items";
+
+onMount(() => {
+    unfocusOnMobileKeyboardHidden("items-search");
+})
 </script>
 
 <ul class="items__list">

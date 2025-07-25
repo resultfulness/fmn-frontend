@@ -1,5 +1,5 @@
 <script lang="ts">
-import { getContext } from "svelte";
+import { getContext, onMount } from "svelte";
 import type { PageProps } from "./$types";
 import api from "$lib/api";
 import Button from "$lib/components/button.svelte";
@@ -11,6 +11,7 @@ import Separator from "$lib/components/separator.svelte";
 import { showConfirm } from "$lib/components/confirm.svelte";
 import { showToast } from "$lib/components/toast.svelte";
 import app from "$lib/app.svelte";
+import unfocusOnMobileKeyboardHidden from "$lib/mobile-unfocus";
 
 let { data }: PageProps = $props();
 let { cart } = $derived(data);
@@ -117,6 +118,10 @@ async function handleSetDefault() {
         showToast("cart set as default", "success");
     } catch (e) {}
 }
+
+onMount(() => {
+    unfocusOnMobileKeyboardHidden("cart-items-search");
+})
 
 const header: any = getContext("header");
 afterNavigate(() => {
