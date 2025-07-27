@@ -174,10 +174,10 @@ function nosearch() {
 }
 // }}}
 
-const header = getContext("header");
-header.title = "items";
-
 onMount(() => {
+    const header = getContext("header");
+    header.title = "items";
+
     unfocusOnMobileKeyboardHidden("items-search");
 });
 </script>

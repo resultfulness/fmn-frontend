@@ -1,5 +1,5 @@
 import app from "./app.svelte";
-import type { Cart, CartPatch, Carts, Item, ItemNew, Items, User, UserPatch } from "./types";
+import type { Cart, CartNew, CartPatch, Carts, Item, ItemNew, Items, Recipe, RecipeNew, RecipePatch, Recipes, User, UserPatch } from "./types";
 import { PUBLIC_API_URL } from "$env/static/public";
 import auth from "./auth.svelte";
 
@@ -72,6 +72,13 @@ const api = {
         }
     },
     carts: {
+        async new(newCart: CartNew) {
+            return await apiFetch(
+                "/carts/new",
+                "POST",
+                newCart,
+            );
+        },
         async getAll(): Promise<Carts> {
             return await apiFetch("/carts/search");
         },
@@ -103,7 +110,7 @@ const api = {
             return await apiFetch(
                 `/items/${newItem.item_id}`,
                 "PATCH",
-                { name: newItem.name, icon: newItem.icon },
+                newItem,
             );
         },
         async new(newItem: ItemNew): Promise<Item> {
@@ -113,11 +120,41 @@ const api = {
                 { name: newItem.name, icon: newItem.icon },
             );
         },
-        async delete(itemId: number): Promise<Item> {
-            return await apiFetch(`/items/${itemId}`, "DELETE");
+        async delete(id: number): Promise<Item> {
+            return await apiFetch(`/items/${id}`, "DELETE");
         }
     },
-    recipes: {},
+    recipes: {
+        async new(newRecipe: RecipeNew): Promise<Recipe> {
+            return await apiFetch(
+                "/recipes/new",
+                "POST",
+                newRecipe,
+            );
+        },
+        async getAll(): Promise<Recipes> {
+            return await apiFetch("/recipes/search");
+        },
+        async get(id: number): Promise<Recipe> {
+            return await apiFetch(`/recipes/${id}`);
+        },
+        async delete(id: number): Promise<Recipe> {
+            return await apiFetch(`/recipes/${id}`, "DELETE");
+        },
+        async patch(newRecipe: RecipePatch): Promise<Recipe> {
+            return await apiFetch(
+                `/recipes/${newRecipe.recipe_id}`,
+                "PATCH",
+                { name: newRecipe.name, icon: newRecipe.icon }
+            );
+        },
+        async putItem(id: number, item_id: number): Promise<Recipe> {
+            return await apiFetch(`/recipes/${id}/${item_id}`, "PUT");
+        },
+        async deleteItem(id: number, item_id: number): Promise<Recipe> {
+            return await apiFetch(`/recipes/${id}/${item_id}`, "DELETE");
+        },
+    },
 }
 
 export default api;
