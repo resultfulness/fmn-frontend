@@ -6,7 +6,7 @@ import Button from "$lib/components/button.svelte";
 import Drawer from "$lib/components/drawer.svelte";
 import Icon from "$lib/components/icon.svelte";
 import Input from "$lib/components/input.svelte";
-import { afterNavigate, goto, invalidateAll } from "$app/navigation";
+import { afterNavigate, goto } from "$app/navigation";
 import Separator from "$lib/components/separator.svelte";
 import { showConfirm } from "$lib/components/confirm.svelte";
 import { showToast } from "$lib/components/toast.svelte";
@@ -178,6 +178,7 @@ afterNavigate(() => {
             id="cart-items-search"
             placeholder="search for items..."
             bind:value={searchQuery}
+            showClear
         />
     </div>
     <ul class="items__list items--rest__list">
@@ -263,6 +264,7 @@ afterNavigate(() => {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 0.5rem;
+    overflow: scroll;
 }
 
 .items__list__item__icon {
@@ -326,6 +328,23 @@ afterNavigate(() => {
         border-top-right-radius: 1rem;
         padding: 1rem;
         z-index: 4;
+    }
+}
+
+@media screen and (max-height: 560px) {
+    .items--rest {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        top: 0;
+        background-color: var(--color-surface2);
+        z-index: 4;
+        display: flex;
+        flex-direction: column;
+    }
+    .items__list {
+        flex: 1;
     }
 }
 </style>
