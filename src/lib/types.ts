@@ -1,8 +1,9 @@
 export type User = {
     email: string;
     role: string;
-    user_id: string;
+    user_id: number;
     username: string;
+    cart_id: number;
 }
 
 export type UserPatch = {

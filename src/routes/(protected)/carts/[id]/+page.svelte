@@ -21,20 +21,23 @@ let searchQuery = $state("");
 
 let restitems = $derived(
     items.items
-        .filter(i => !cartitems.some(ci => ci.item_id === i.item_id))
-        .filter(i => i.name.includes(searchQuery))
+        .filter(
+            item =>
+                !cartitems.some(cartitem => cartitem.item_id === item.item_id)
+        )
+        .filter(item => item.name.includes(searchQuery))
 );
 
 async function add(id: number) {
     searchQuery = "";
-    cartitems = [...cartitems, restitems.find(i => i.item_id === id)!];
-    restitems = restitems.filter(i => i.item_id !== id);
+    cartitems = [...cartitems, restitems.find(item => item.item_id === id)!];
+    restitems = restitems.filter(item => item.item_id !== id);
     cart = await api.carts.putItem(data.cart!.cart_id, id);
 }
 
 async function remove(id: number) {
-    restitems = [...restitems, cartitems.find(i => i.item_id === id)!];
-    cartitems = cartitems.filter(i => i.item_id !== id);
+    restitems = [...restitems, cartitems.find(item => item.item_id === id)!];
+    cartitems = cartitems.filter(item => item.item_id !== id);
     cart = await api.carts.deleteItem(data.cart!.cart_id, id);
 }
 
@@ -87,7 +90,7 @@ async function handleEdit(e: SubmitEvent) {
             noedit();
             showToast("cart updated", "success");
             header.title = res.name;
-            await invalidateAll();
+            cart = res;
         }
     } catch (e) {}
 }
@@ -102,8 +105,8 @@ async function handleDelete() {
             const res = await api.carts.delete(cart.cart_id);
             if (res) {
                 showToast(`cart '${res.name}' deleted`, "success");
-                if (app.defaultCartId === res.cart_id) {
-                    app.defaultCartId = null;
+                if (app.user.cart_id === res.cart_id) {
+                    app.user.cart_id = null;
                 }
                 goto("/carts");
             }
@@ -114,14 +117,14 @@ async function handleDelete() {
 async function handleSetDefault() {
     try {
         await api.users.putDefaultCart(cart.cart_id);
-        app.defaultCartId = cart.cart_id;
+        app.user.cart_id = cart.cart_id;
         showToast("cart set as default", "success");
     } catch (e) {}
 }
 
 onMount(() => {
     unfocusOnMobileKeyboardHidden("cart-items-search");
-})
+});
 
 const header: any = getContext("header");
 afterNavigate(() => {
@@ -230,8 +233,8 @@ afterNavigate(() => {
         <Button
             fillwidth
             onclick={handleSetDefault}
-            disabled={app.defaultCartId === cart.cart_id}
-            tooltip={app.defaultCartId === cart.cart_id
+            disabled={app.user?.cart_id === cart.cart_id}
+            tooltip={app.user?.cart_id === cart.cart_id
                 ? "cart already default"
                 : undefined}
         >

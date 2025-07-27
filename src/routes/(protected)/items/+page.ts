@@ -3,6 +3,10 @@ import type { PageLoad } from "./$types";
 
 export const load: PageLoad = async ({ fetch }) => {
     api.fetch_fn = fetch;
-    const items = await api.items.getAll();
-    return { items };
+    let items;
+    try {
+        items = await api.items.getAll();
+    } catch (e) { }
+
+    return { items: items! };
 }

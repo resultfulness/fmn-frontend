@@ -157,8 +157,7 @@ async function handleSubmit(e: SubmitEvent) {
         fillwidth
         tooltip="logout"
         onclick={() => {
-            auth.clear();
-            goto("/login");
+            auth.logout();
             showToast("logged out", "info");
         }}
     >

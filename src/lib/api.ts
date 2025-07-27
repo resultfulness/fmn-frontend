@@ -1,6 +1,7 @@
 import app from "./app.svelte";
-import type { Cart, CartPatch, Carts, Item, ItemNew, Items, UserPatch } from "./types";
+import type { Cart, CartPatch, Carts, Item, ItemNew, Items, User, UserPatch } from "./types";
 import { PUBLIC_API_URL } from "$env/static/public";
+import auth from "./auth.svelte";
 
 export class ApiError extends Error {
     constructor(message: string, public status: number) {
@@ -26,6 +27,10 @@ async function apiFetch(
         return null;
     }
     if (!r.ok) {
+        if (r.status === 401) {
+            auth.logoutUnauthorized();
+            return;
+        }
         throw new ApiError((await r.json()).error || "unknown error", r.status);
     } else {
         return await r.json();
@@ -35,17 +40,17 @@ async function apiFetch(
 const api = {
     fetch_fn: window.fetch,
     users: {
-        async me() {
+        async me(): Promise<User> {
             return await apiFetch("/users/me");
         },
-        async login(email: string, password: string) {
+        async login(email: string, password: string): Promise<User> {
             return await apiFetch(
                 "/users/login",
                 "POST",
                 { email, password }
             );
         },
-        async register(email: string, password: string) {
+        async register(email: string, password: string): Promise<User> {
             return await apiFetch(
                 "/users/register",
                 "POST",
@@ -94,14 +99,14 @@ const api = {
         async getAll(): Promise<Items> {
             return await apiFetch("/items/search");
         },
-        async patch(newItem: Item) {
+        async patch(newItem: Item): Promise<Item> {
             return await apiFetch(
                 `/items/${newItem.item_id}`,
                 "PATCH",
                 { name: newItem.name, icon: newItem.icon },
             );
         },
-        async new(newItem: ItemNew) {
+        async new(newItem: ItemNew): Promise<Item> {
             return await apiFetch(
                 "/items/new",
                 "POST",

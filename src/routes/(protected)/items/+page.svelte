@@ -1,5 +1,4 @@
 <script lang="ts">
-import { invalidateAll } from "$app/navigation";
 import type { ApiError } from "$lib/api";
 import api from "$lib/api";
 import Button from "$lib/components/button.svelte";
@@ -17,7 +16,7 @@ let { data }: PageProps = $props();
 let { items } = $derived(data);
 let searchterm = $state("");
 let filteredItems = $derived(
-    items.items.filter(i => i.name.includes(searchterm))
+    items.items.filter(item => item.name.includes(searchterm))
 );
 
 let form = $state({
@@ -75,9 +74,12 @@ async function handleEdit(e: SubmitEvent) {
             icon: form.icon,
         });
         if (data) {
+            const index = filteredItems.findIndex(
+                item => item.item_id === data.item_id
+            );
+            filteredItems = filteredItems.with(index, data);
             noedit();
             showToast("item saved", "success");
-            await invalidateAll();
         }
     } catch (e) {
         const ae = e as ApiError;
@@ -122,9 +124,9 @@ async function handleAdd(e: SubmitEvent) {
             icon: form.icon,
         });
         if (data) {
+            filteredItems = [...filteredItems, data];
             noadd();
             showToast("item added", "success");
-            await invalidateAll();
         }
     } catch (e) {
         const ae = e as ApiError;
@@ -153,7 +155,6 @@ async function handleDelete(id: number) {
             if (res) {
                 noedit();
                 showToast(`item '${res.name}' deleted`, "success");
-                await invalidateAll();
             }
         } catch (e) {}
     }
@@ -178,7 +179,7 @@ header.title = "items";
 
 onMount(() => {
     unfocusOnMobileKeyboardHidden("items-search");
-})
+});
 </script>
 
 <ul class="items__list">

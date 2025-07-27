@@ -1,3 +1,6 @@
+import { goto } from "$app/navigation";
+import { showToast } from "$lib/components/toast.svelte";
+
 const auth = {
     get token(): string | null {
         const cookies = document.cookie.split(";")
@@ -9,10 +12,17 @@ const auth = {
         }
         return null;
     },
-    clear() {
+    logout() {
         if (this.token) {
             document.cookie = 'token=;expires=Thu, 01 Jan 1970 00:00:00 GMT';
         }
+        goto("/login");
+    },
+    logoutUnauthorized() {
+        if (this.token) {
+            showToast("session expired. please login again", "info", 10000);
+        }
+        this.logout();
     }
 }
 
