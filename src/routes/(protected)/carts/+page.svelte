@@ -1,23 +1,33 @@
 <script lang="ts">
-import { getContext } from "svelte";
-import type { PageProps } from "./$types";
+import { getContext, onMount } from "svelte";
+import type { LayoutHeader } from "../+layout.svelte";
+import app from "$lib/app.svelte";
 
-let { data }: PageProps = $props();
-let { carts } = data;
-
-const header = getContext("header");
+const header = getContext<LayoutHeader>("header");
 header.title = "carts";
+
+async function fetchCarts() {
+    app.state.isLoading++;
+    await app.updateCarts();
+    app.state.isLoading--;
+}
+
+onMount(fetchCarts);
 </script>
 
-{#if carts.count < 1}
+{#if app.state.carts.count < 1}
     <p class="empty-label">no carts yet</p>
 {:else}
     <ul class="card-list">
-        {#each carts.carts as cart}
+        {#each app.state.carts.carts as cart}
             <li class="card-list__item">
                 <a class="card" href={`/carts/${cart.cart_id}`}>
                     <h2 class="card__title">{cart.name}</h2>
-                    <img src={cart.icon} alt="cart icon" class="card__icon" />
+                    <img
+                        src={cart.icon}
+                        alt="cart icon"
+                        class="card__icon"
+                    />
                 </a>
             </li>
         {/each}

@@ -14,7 +14,7 @@ async function apiFetch(
     endpoint: string,
     method?: "GET" | "POST" | "PATCH" | "PUT" | "DELETE",
     body?: object,
-) {
+): Promise<any> {
     if (!api.fetch_fn) api.fetch_fn = window.fetch;
     const r = await api.fetch_fn(`${PUBLIC_API_URL}${endpoint}`, {
         method: method || "GET",
@@ -59,7 +59,7 @@ const api = {
         },
         async patch(newUser: UserPatch) {
             return await apiFetch(
-                `/users/${app.user?.user_id}`,
+                `/users/${app.state.user?.user_id}`,
                 "PATCH",
                 newUser
             );

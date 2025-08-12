@@ -1,44 +1,7 @@
-<script module lang="ts">
-type ToastVariant = "info" | "success" | "warn" | "error";
-interface Toast {
-    visible: boolean;
-    message: string;
-    variant: ToastVariant;
-}
-
-let toast: Toast = $state({
-    visible: false,
-    message: "",
-    variant: "info",
-});
-
-let t: number;
-
-export function showToast(
-    message: string,
-    variant: ToastVariant,
-    duration: number = 4000,
-) {
-    if (toast.visible) {
-        clearTimeout(t);
-        toast.visible = false;
-        toast.message = "";
-    }
-    setTimeout(() => {
-        toast.variant = variant;
-        toast.message = message;
-        toast.visible = true;
-    }, 100);
-    t = setTimeout(() => {
-        toast.visible = false;
-        toast.message = "";
-    }, duration);
-}
-</script>
-
 <script lang="ts">
 import { fly } from "svelte/transition";
 import Icon from "./icon.svelte";
+import { toast } from "$lib/toast.svelte";
 </script>
 
 {#if toast.visible}
@@ -78,7 +41,7 @@ import Icon from "./icon.svelte";
     left: 0;
     right: 0;
     top: 5rem;
-    max-width: 240px;
+    max-width: fit-content;
     margin-inline: auto;
     border-radius: 1rem;
     display: flex;
@@ -108,6 +71,7 @@ import Icon from "./icon.svelte";
     overflow: hidden;
     max-width: 1049px;
     font-size: 1.1rem;
+    padding-right: 1rem;
 }
 
 .toast__close {

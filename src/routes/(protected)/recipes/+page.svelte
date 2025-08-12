@@ -1,18 +1,22 @@
 <script lang="ts">
 import { getContext, onMount } from "svelte";
-import type { PageProps } from "./$types";
+import type { LayoutHeader } from "../+layout.svelte";
+import app from "$lib/app.svelte";
+
+async function fetchRecipes() {
+    app.state.isLoading++;
+    await app.updateRecipes();
+    app.state.isLoading--;
+}
 
 onMount(() => {
-    getContext("header").title = "recipes";
+    fetchRecipes();
+    getContext<LayoutHeader>("header").title = "recipes";
 });
-
-let { data }: PageProps = $props();
-
-let { recipes } = $derived(data);
 </script>
 
 <ul class="recipe-list">
-    {#each recipes.recipes as recipe}
+    {#each app.state.recipes.recipes as recipe}
         <li class="recipe-list__item">
             <a class="recipe" href={`/recipes/${recipe.recipe_id}`}>
                 <h2 class="recipe__title">{recipe.name}</h2>

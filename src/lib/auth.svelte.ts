@@ -1,5 +1,5 @@
 import { goto } from "$app/navigation";
-import { showToast } from "$lib/components/toast.svelte";
+import { showToast } from "$lib/toast.svelte";
 
 const auth = {
     get token(): string | null {

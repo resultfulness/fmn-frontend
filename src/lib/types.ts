@@ -3,7 +3,7 @@ export type User = {
     role: string;
     user_id: number;
     username: string;
-    cart_id: number;
+    cart_id: number | null;
 };
 
 export type UserPatch = {

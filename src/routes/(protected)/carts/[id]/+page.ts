@@ -1,6 +1,7 @@
-import api, { ApiError } from "$lib/api";
+import api from "$lib/api";
 import { error } from "@sveltejs/kit";
 import type { PageLoad } from "./$types";
+import app from "$lib/app.svelte";
 
 export const load: PageLoad = async ({ params, fetch }) => {
     api.fetch_fn = fetch;
@@ -9,15 +10,10 @@ export const load: PageLoad = async ({ params, fetch }) => {
     }
     const id = +params.id;
 
-    try {
-        const cart = await api.carts.get(id);
-        const items = await api.items.getAll();
-        return { cart, items };
-    } catch (e) {
-        const ae = e as ApiError;
-        switch (ae.status) {
-            case 404:
-                throw error(404, `no cart with id ${id}`);
-        }
+    await app.updateCarts();
+    if (!app.state.carts?.carts.find(cart => cart.cart_id === id)) {
+        throw error(404, `no cart with id ${id}`);
     }
+
+    return { id };
 }

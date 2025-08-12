@@ -1,5 +1,5 @@
 <script lang="ts">
-import { getContext, onMount } from "svelte";
+import { getContext } from "svelte";
 import type { PageProps } from "./$types";
 import api from "$lib/api";
 import Button from "$lib/components/button.svelte";
@@ -9,9 +9,7 @@ import Input from "$lib/components/input.svelte";
 import { afterNavigate, goto } from "$app/navigation";
 import Separator from "$lib/components/separator.svelte";
 import { showConfirm } from "$lib/components/confirm.svelte";
-import { showToast } from "$lib/components/toast.svelte";
-import app from "$lib/app.svelte";
-import unfocusOnMobileKeyboardHidden from "$lib/mobile-unfocus";
+import { showToast } from "$lib/toast.svelte";
 import type { Items, Recipe } from "$lib/types";
 
 let { data }: PageProps = $props();
@@ -33,7 +31,10 @@ let restitems = $derived(
 
 async function add(id: number) {
     searchterm = "";
-    recipeitems = [...recipeitems, restitems.find(item => item.item_id === id)!];
+    recipeitems = [
+        ...recipeitems,
+        restitems.find(item => item.item_id === id)!,
+    ];
     restitems = restitems.filter(item => item.item_id !== id);
     recipe = await api.recipes.putItem(data.recipe!.recipe_id, id);
 }

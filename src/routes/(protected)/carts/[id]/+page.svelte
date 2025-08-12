@@ -1,6 +1,5 @@
 <script lang="ts">
 import { getContext, onMount } from "svelte";
-import type { PageProps } from "./$types";
 import api from "$lib/api";
 import Button from "$lib/components/button.svelte";
 import Drawer from "$lib/components/drawer.svelte";
@@ -9,36 +8,84 @@ import Input from "$lib/components/input.svelte";
 import { afterNavigate, goto } from "$app/navigation";
 import Separator from "$lib/components/separator.svelte";
 import { showConfirm } from "$lib/components/confirm.svelte";
-import { showToast } from "$lib/components/toast.svelte";
+import { showToast } from "$lib/toast.svelte";
 import app from "$lib/app.svelte";
 import unfocusOnMobileKeyboardHidden from "$lib/mobile-unfocus";
+import type { LayoutHeader } from "../../+layout.svelte";
+import type { Cart } from "$lib/types";
 
-let { data }: PageProps = $props();
-let { cart } = $derived(data);
+const header = getContext<LayoutHeader>("header");
+afterNavigate(() => {
+    header.left = back;
+    header.right = opts;
+});
+
+$effect(() => {
+    header.title = cart.name;
+});
+
+let { data } = $props();
+let { id } = data;
+let isDefault = $derived(
+    app.state.defaultCart !== undefined &&
+        app.state.defaultCart.cart_id !== undefined &&
+        app.state.defaultCart.cart_id === id
+);
+let cart: Cart = $derived(
+    app.state.defaultCart && isDefault
+        ? app.state.defaultCart
+        : { cart_id: id, name: "cart", icon: "", items: [] }
+);
+
+async function fetchCartAndItems() {
+    app.state.isLoading++;
+    await app.updateItems();
+    if (app.state.defaultCart && isDefault) {
+        await app.updateDefaultCart();
+        cart = app.state.defaultCart;
+    } else {
+        cart = await api.carts.get(id);
+    }
+    app.state.isLoading--;
+}
+
+onMount(async () => {
+    fetchCartAndItems();
+    unfocusOnMobileKeyboardHidden("cart-items-search");
+});
+
+let searchterm = $state("");
 let cartitems = $derived(cart.items);
-let { items } = $derived(data);
-let searchQuery = $state("");
-
 let restitems = $derived(
-    items.items
+    app.state.items.items
         .filter(
             item =>
                 !cartitems.some(cartitem => cartitem.item_id === item.item_id)
         )
-        .filter(item => item.name.includes(searchQuery))
+        .filter(item => item.name.includes(searchterm))
 );
 
 async function add(id: number) {
-    searchQuery = "";
+    searchterm = "";
     cartitems = [...cartitems, restitems.find(item => item.item_id === id)!];
     restitems = restitems.filter(item => item.item_id !== id);
-    cart = await api.carts.putItem(data.cart!.cart_id, id);
+    if (app.state.defaultCart && isDefault) {
+        app.state.defaultCart.items = cartitems;
+    }
+    app.state.isLoading++;
+    cart = await api.carts.putItem(cart.cart_id, id);
+    app.state.isLoading--;
 }
 
 async function remove(id: number) {
     restitems = [...restitems, cartitems.find(item => item.item_id === id)!];
     cartitems = cartitems.filter(item => item.item_id !== id);
-    cart = await api.carts.deleteItem(data.cart!.cart_id, id);
+    if (app.state.defaultCart && isDefault) {
+        app.state.defaultCart.items = cartitems;
+    }
+    app.state.isLoading++;
+    cart = await api.carts.deleteItem(cart.cart_id, id);
+    app.state.isLoading--;
 }
 
 let form = $state({
@@ -81,6 +128,13 @@ async function handleEdit(e: SubmitEvent) {
     }
 
     try {
+        if (app.state.defaultCart && isDefault) {
+            app.state.defaultCart.name = form.name;
+            app.state.defaultCart.icon = form.icon;
+        } else {
+            cart.name = form.name;
+            cart.icon = form.icon;
+        }
         const res = await api.carts.patch({
             cart_id: cart.cart_id,
             name: form.name,
@@ -89,8 +143,11 @@ async function handleEdit(e: SubmitEvent) {
         if (res) {
             noedit();
             showToast("cart updated", "success");
-            header.title = res.name;
-            cart = res;
+            if (isDefault) {
+                app.state.defaultCart = res;
+            } else {
+                cart = res;
+            }
         }
     } catch (e) {}
 }
@@ -105,8 +162,9 @@ async function handleDelete() {
             const res = await api.carts.delete(cart.cart_id);
             if (res) {
                 showToast(`cart '${res.name}' deleted`, "success");
-                if (app.user.cart_id === res.cart_id) {
-                    app.user.cart_id = null;
+                if (app.state.user?.cart_id === res.cart_id) {
+                    app.state.user.cart_id = null;
+                    app.state.defaultCart = undefined;
                 }
                 goto("/carts");
             }
@@ -116,22 +174,12 @@ async function handleDelete() {
 
 async function handleSetDefault() {
     try {
-        await api.users.putDefaultCart(cart.cart_id);
-        app.user.cart_id = cart.cart_id;
+        await api.users.putDefaultCart(id);
+        app.state.user!.cart_id = id;
+        app.updateDefaultCart();
         showToast("cart set as default", "success");
     } catch (e) {}
 }
-
-onMount(() => {
-    unfocusOnMobileKeyboardHidden("cart-items-search");
-});
-
-const header: any = getContext("header");
-afterNavigate(() => {
-    header.title = cart.name;
-    header.left = back;
-    header.right = opts;
-});
 </script>
 
 {#snippet back()}
@@ -177,7 +225,7 @@ afterNavigate(() => {
         <Input
             id="cart-items-search"
             placeholder="search for items..."
-            bind:value={searchQuery}
+            bind:value={searchterm}
             showClear
         />
     </div>
@@ -234,8 +282,8 @@ afterNavigate(() => {
         <Button
             fillwidth
             onclick={handleSetDefault}
-            disabled={app.user?.cart_id === cart.cart_id}
-            tooltip={app.user?.cart_id === cart.cart_id
+            disabled={app.state.user?.cart_id === cart.cart_id}
+            tooltip={app.state.user?.cart_id === cart.cart_id
                 ? "cart already default"
                 : undefined}
         >

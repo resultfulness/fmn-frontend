@@ -1,3 +1,11 @@
+<script module lang="ts">
+export type LayoutHeader = {
+    title: string;
+    left?: Snippet;
+    right?: Snippet;
+};
+</script>
+
 <script lang="ts">
 import Icon from "$lib/components/icon.svelte";
 import app from "$lib/app.svelte";
@@ -5,14 +13,11 @@ import type { LayoutProps } from "./$types";
 import { page } from "$app/state";
 import { setContext, type Snippet } from "svelte";
 import { beforeNavigate } from "$app/navigation";
+import Loading from "./loading.svelte";
 
 let { children }: LayoutProps = $props();
 
-let header: {
-    title: string;
-    left?: Snippet;
-    right?: Snippet;
-} = $state({
+let header: LayoutHeader = $state({
     title: "forget me not",
     left: undefined,
     right: undefined,
@@ -42,13 +47,14 @@ let path = $derived(page.url.pathname);
             </div>
         </div>
     </header>
+    <Loading />
     <main>{@render children()}</main>
     <footer>
         <nav class="main-nav">
             <ul class="main-nav__list">
                 <li class="main-nav__item">
                     <a
-                        href={`/carts/${app.user.cart_id ?? ""}`}
+                        href={`/carts/${app.state.user?.cart_id ?? ""}`}
                         class="main-nav__link"
                         class:main-nav__link--active={path.startsWith("/carts")}
                     >
@@ -68,7 +74,7 @@ let path = $derived(page.url.pathname);
                         </div>
                     </a>
                 </li>
-                {#if app.user?.role === "admin"}
+                {#if app.state.user?.role === "admin"}
                     <li class="main-nav__item">
                         <a
                             href="/items"
@@ -108,6 +114,7 @@ let path = $derived(page.url.pathname);
 }
 
 header {
+    position: relative;
     background-color: var(--color-background);
 }
 

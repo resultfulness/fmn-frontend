@@ -6,17 +6,22 @@ import { showConfirm } from "$lib/components/confirm.svelte";
 import Drawer from "$lib/components/drawer.svelte";
 import Icon from "$lib/components/icon.svelte";
 import Input from "$lib/components/input.svelte";
-import { showToast } from "$lib/components/toast.svelte";
+import { showToast } from "$lib/toast.svelte";
 import type { Item } from "$lib/types";
-import type { PageProps } from "./$types";
 import { getContext, onMount } from "svelte";
 import unfocusOnMobileKeyboardHidden from "$lib/mobile-unfocus";
+import type { LayoutHeader } from "../+layout.svelte";
+import app from "$lib/app.svelte";
 
-let { data }: PageProps = $props();
-let { items } = $derived(data);
+async function fetchItems() {
+    app.state.isLoading++;
+    await app.updateItems();
+    app.state.isLoading--;
+}
+
 let searchterm = $state("");
 let filteredItems = $derived(
-    items.items.filter(item => item.name.includes(searchterm))
+    app.state.items.items.filter(item => item.name.includes(searchterm))
 );
 
 let form = $state({
@@ -68,16 +73,22 @@ async function handleEdit(e: SubmitEvent) {
     }
 
     try {
+        const index = app.state.items.items.findIndex(
+            item => item.item_id === itemEdited!.item_id
+        );
+        if (index >= 0) {
+            app.state.items.items[index] = {
+                item_id: itemEdited.item_id,
+                name: form.name,
+                icon: form.icon,
+            };
+        }
         const data = await api.items.patch({
             item_id: itemEdited.item_id,
             name: form.name,
             icon: form.icon,
         });
         if (data) {
-            const index = filteredItems.findIndex(
-                item => item.item_id === data.item_id
-            );
-            filteredItems = filteredItems.with(index, data);
             noedit();
             showToast("item saved", "success");
         }
@@ -124,7 +135,7 @@ async function handleAdd(e: SubmitEvent) {
             icon: form.icon,
         });
         if (data) {
-            filteredItems = [...filteredItems, data];
+            app.state.items.items.push(data);
             noadd();
             showToast("item added", "success");
         }
@@ -150,7 +161,9 @@ async function handleDelete(id: number) {
         )
     ) {
         try {
-            filteredItems = filteredItems.filter(item => item.item_id !== id);
+            app.state.items.items = app.state.items.items.filter(
+                item => item.item_id !== id
+            );
             const res = await api.items.delete(id);
             if (res) {
                 noedit();
@@ -175,7 +188,9 @@ function nosearch() {
 // }}}
 
 onMount(() => {
-    const header = getContext("header");
+    fetchItems();
+
+    const header = getContext<LayoutHeader>("header");
     header.title = "items";
 
     unfocusOnMobileKeyboardHidden("items-search");

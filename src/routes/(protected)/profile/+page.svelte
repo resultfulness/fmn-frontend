@@ -5,13 +5,13 @@ import Input from "$lib/components/input.svelte";
 import app from "$lib/app.svelte";
 import api, { ApiError } from "$lib/api";
 import auth from "$lib/auth.svelte";
-import { goto } from "$app/navigation";
-import { showToast } from "$lib/components/toast.svelte";
+import { showToast } from "$lib/toast.svelte";
 import { getContext } from "svelte";
+import type { LayoutHeader } from "../+layout.svelte";
 
-getContext("header").title = "profile";
+getContext<LayoutHeader>("header").title = "profile";
 
-let user = $derived(app.user!);
+let user = $derived(app.state.user!);
 
 let editMode = $state(false);
 let form = $state({
@@ -47,7 +47,7 @@ async function handleSubmit(e: SubmitEvent) {
                 form.newPassword.length > 0 ? form.newPassword : undefined,
         });
         if (data) {
-            app.user = data;
+            app.state.user = data;
             showToast("data saved", "success");
             editMode = false;
         }
@@ -60,7 +60,6 @@ async function handleSubmit(e: SubmitEvent) {
         }
     }
 }
-
 </script>
 
 <section class="card card--info">

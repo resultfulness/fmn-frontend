@@ -32,7 +32,7 @@ async function handleSubmit(e: SubmitEvent) {
     try {
         const data = await api.users.login(form.email, form.password);
         if (data) {
-            app.user = data;
+            app.state.user = data;
             goto("/");
         }
     } catch (e) {
