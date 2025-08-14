@@ -11,8 +11,6 @@ import type { LayoutHeader } from "../+layout.svelte";
 
 getContext<LayoutHeader>("header").title = "profile";
 
-let user = $derived(app.state.user!);
-
 let editMode = $state(false);
 let form = $state({
     username: "",
@@ -26,8 +24,9 @@ let form = $state({
 });
 
 let submitDisabled = $derived(
-    (form.email === user.email || form.email.length < 1) &&
-        (form.username === user.username || form.username.length < 1) &&
+    (form.email === app.state.user?.email || form.email.length < 1) &&
+        (form.username === app.state.user?.username ||
+            form.username.length < 1) &&
         form.newPassword.length < 1
 );
 
@@ -62,107 +61,109 @@ async function handleSubmit(e: SubmitEvent) {
 }
 </script>
 
-<section class="card card--info">
-    <h2 class="card__title">info</h2>
-    <span>role: {user.role}</span>
-    {#if editMode}
-        <form class="form card--info__form" onsubmit={handleSubmit}>
-            <h3 class="form__title">details (edit)</h3>
+{#if app.state.user}
+    <section class="card card--info">
+        <h2 class="card__title">info</h2>
+        <span>role: {app.state.user.role}</span>
+        {#if editMode}
+            <form class="form card--info__form" onsubmit={handleSubmit}>
+                <h3 class="form__title">details (edit)</h3>
 
-            <Input
-                id="username"
-                bind:value={form.username}
-                label="username:"
-                error={form.error.username}
-                placeholder={user.username}
-            />
-            <Input
-                id="email"
-                bind:value={form.email}
-                label="email:"
-                type="email"
-                error={form.error.email}
-                placeholder={user.email}
-            />
-            <Input
-                id="newPassword"
-                bind:value={form.newPassword}
-                label="new password (empty - no change):"
-                type="password"
-                error={form.error.newPassword}
-            />
+                <Input
+                    id="username"
+                    bind:value={form.username}
+                    label="username:"
+                    error={form.error.username}
+                    placeholder={app.state.user.username}
+                />
+                <Input
+                    id="email"
+                    bind:value={form.email}
+                    label="email:"
+                    type="email"
+                    error={form.error.email}
+                    placeholder={app.state.user.email}
+                />
+                <Input
+                    id="newPassword"
+                    bind:value={form.newPassword}
+                    label="new password (empty - no change):"
+                    type="password"
+                    error={form.error.newPassword}
+                />
 
-            <div class="form__submit">
-                <Button
-                    fillwidth
-                    style="secondary"
-                    onclick={() => {
-                        editMode = false;
-                    }}
-                    type="button"
-                >
-                    cancel
-                </Button>
-                <Button
-                    fillwidth
-                    disabled={submitDisabled}
-                    tooltip={submitDisabled
-                        ? "change something first!"
-                        : undefined}
-                >
-                    save
-                </Button>
+                <div class="form__submit">
+                    <Button
+                        fillwidth
+                        style="secondary"
+                        onclick={() => {
+                            editMode = false;
+                        }}
+                        type="button"
+                    >
+                        cancel
+                    </Button>
+                    <Button
+                        fillwidth
+                        disabled={submitDisabled}
+                        tooltip={submitDisabled
+                            ? "change something first!"
+                            : undefined}
+                    >
+                        save
+                    </Button>
+                </div>
+            </form>
+        {:else}
+            <div class="card--info__details">
+                <div class="card--info__details__header">
+                    <h3 class="card--info__details__title">details</h3>
+                    <Button
+                        style="icon"
+                        onclick={() => {
+                            editMode = !editMode;
+                        }}
+                    >
+                        <Icon name="edit" />
+                    </Button>
+                </div>
+
+                <table class="card--info__details__table">
+                    <tbody>
+                        <tr class="card--info__details__entry">
+                            <td>username:</td>
+                            <td>{app.state.user.username}</td>
+                        </tr>
+                        <tr class="card--info__details__entry">
+                            <td>email:</td>
+                            <td>{app.state.user.email}</td>
+                        </tr>
+                        <tr class="card--info__details__entry">
+                            <td>password:</td>
+                            <td class="card--info__details__password">
+                                {#each Array(8) as _}
+                                    <Icon name="circle" size={12} />
+                                {/each}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-        </form>
-    {:else}
-        <div class="card--info__details">
-            <div class="card--info__details__header">
-                <h3 class="card--info__details__title">details</h3>
-                <Button
-                    style="icon"
-                    onclick={() => {
-                        editMode = !editMode;
-                    }}
-                >
-                    <Icon name="edit" />
-                </Button>
-            </div>
-
-            <table class="card--info__details__table">
-                <tbody>
-                    <tr class="card--info__details__entry">
-                        <td>username:</td>
-                        <td>{user.username}</td>
-                    </tr>
-                    <tr class="card--info__details__entry">
-                        <td>email:</td>
-                        <td>{user.email}</td>
-                    </tr>
-                    <tr class="card--info__details__entry">
-                        <td>password:</td>
-                        <td class="card--info__details__password">
-                            {#each Array(8) as _}
-                                <Icon name="circle" size={12} />
-                            {/each}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    {/if}
-</section>
-<div class="logout">
-    <Button
-        fillwidth
-        tooltip="logout"
-        onclick={() => {
-            auth.logout();
-            showToast("logged out", "info");
-        }}
-    >
-        logout
-    </Button>
-</div>
+        {/if}
+    </section>
+    <div class="logout">
+        <Button
+            fillwidth
+            tooltip="logout"
+            onclick={() => {
+                auth.logout();
+                showToast("logged out", "info");
+            }}
+        >
+            logout
+        </Button>
+    </div>
+{/if}
 
 <style>
 .card {

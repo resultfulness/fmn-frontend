@@ -15,23 +15,25 @@ async function fetchCarts() {
 onMount(fetchCarts);
 </script>
 
-{#if app.state.carts.count < 1}
-    <p class="empty-label">no carts yet</p>
-{:else}
-    <ul class="card-list">
-        {#each app.state.carts.carts as cart}
-            <li class="card-list__item">
-                <a class="card" href={`/carts/${cart.cart_id}`}>
-                    <h2 class="card__title">{cart.name}</h2>
-                    <img
-                        src={cart.icon}
-                        alt="cart icon"
-                        class="card__icon"
-                    />
-                </a>
-            </li>
-        {/each}
-    </ul>
+{#if app.state.carts}
+    {#if app.state.carts.count < 1}
+        <p class="empty-label">no carts yet</p>
+    {:else}
+        <ul class="card-list">
+            {#each app.state.carts.carts as cart}
+                <li class="card-list__item">
+                    <a class="card" href={`/carts/${cart.cart_id}`}>
+                        <h2 class="card__title">{cart.name}</h2>
+                        <img
+                            src={cart.icon}
+                            alt="cart icon"
+                            class="card__icon"
+                        />
+                    </a>
+                </li>
+            {/each}
+        </ul>
+    {/if}
 {/if}
 
 <style>

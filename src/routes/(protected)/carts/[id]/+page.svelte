@@ -194,59 +194,67 @@ async function handleSetDefault() {
     </Button>
 {/snippet}
 
-<section class="items items--cart">
-    <h2 class="items__title">cart</h2>
-    {#if cartitems.length > 0}
-        <ul class="items__list items--cart__list">
-            {#each cartitems as item}
-                <li class="items__list__item items--cart__list__item">
+{#if app.state.carts && app.state.items}
+    <section class="items items--cart">
+        <h2 class="items__title">cart</h2>
+        {#if cartitems.length > 0}
+            <ul class="items__list items--cart__list">
+                {#each cartitems as item (item.item_id)}
+                    <li
+                        class="items__list__item items--cart__list__item"
+                    >
+                        <button
+                            onclick={() => remove(item.item_id)}
+                            class="items__list__item__button items--cart__list__item__button"
+                        >
+                            <img
+                                src={item.icon}
+                                alt={item.name + " icon"}
+                                class="items__list__item__icon items--cart__list__item__icon"
+                            />
+                            <p class="items__list__item__name">{item.name}</p>
+                        </button>
+                    </li>
+                {/each}
+            </ul>
+        {:else}
+            <p class="empty-label">cart empty :)</p>
+        {/if}
+    </section>
+{/if}
+
+{#if app.state.items}
+    <section class="items items--rest">
+        <h2 class="items__title">items</h2>
+        <div class="items__search">
+            <Input
+                id="cart-items-search"
+                placeholder="search for items..."
+                bind:value={searchterm}
+                showClear
+            />
+        </div>
+        <ul class="items__list items--rest__list">
+            {#each restitems as item (item.item_id)}
+                <li
+                    class="items__list__item items--rest__list__item"
+                >
                     <button
-                        onclick={() => remove(item.item_id)}
-                        class="items__list__item__button items--cart__list__item__button"
+                        onclick={() => add(item.item_id)}
+                        class="items__list__item__button items--rest__list__item__button"
                     >
                         <img
                             src={item.icon}
                             alt={item.name + " icon"}
-                            class="items__list__item__icon items--cart__list__item__icon"
+                            class="items__list__item__icon items--rest__list__item__icon"
                         />
                         <p class="items__list__item__name">{item.name}</p>
                     </button>
                 </li>
             {/each}
         </ul>
-    {:else}
-        <p class="empty-label">cart empty :)</p>
-    {/if}
-</section>
-
-<section class="items items--rest">
-    <h2 class="items__title">items</h2>
-    <div class="items__search">
-        <Input
-            id="cart-items-search"
-            placeholder="search for items..."
-            bind:value={searchterm}
-            showClear
-        />
-    </div>
-    <ul class="items__list items--rest__list">
-        {#each restitems as item}
-            <li class="items__list__item items--rest__list__item">
-                <button
-                    onclick={() => add(item.item_id)}
-                    class="items__list__item__button items--rest__list__item__button"
-                >
-                    <img
-                        src={item.icon}
-                        alt={item.name + " icon"}
-                        class="items__list__item__icon items--rest__list__item__icon"
-                    />
-                    <p class="items__list__item__name">{item.name}</p>
-                </button>
-            </li>
-        {/each}
-    </ul>
-</section>
+    </section>
+{/if}
 
 <Drawer bind:ref={editDrawer} onclose={noedit}>
     <div class="edit-drawer">

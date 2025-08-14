@@ -23,22 +23,6 @@ export const load: LayoutLoad = async ({ url, fetch }) => {
         } catch (e) { }
     }
 
-    let promises = [];
-
-    if (!app.state.carts) {
-        promises.push(app.updateCarts());
-    }
-
-    if (!app.state.items) {
-        promises.push(app.updateItems());
-    }
-
-    if (!app.state.recipes) {
-        promises.push(app.updateRecipes());
-    }
-
-    await Promise.all(promises);
-
     if (url.pathname === "/") {
         throw redirect(302, `/carts/${app.state.user?.cart_id ?? ""}`);
     }

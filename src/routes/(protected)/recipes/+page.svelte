@@ -15,20 +15,22 @@ onMount(() => {
 });
 </script>
 
-<ul class="recipe-list">
-    {#each app.state.recipes.recipes as recipe}
-        <li class="recipe-list__item">
-            <a class="recipe" href={`/recipes/${recipe.recipe_id}`}>
-                <h2 class="recipe__title">{recipe.name}</h2>
-                <img
-                    class="recipe__icon"
-                    src={recipe.icon}
-                    alt={recipe.name + " icon"}
-                />
-            </a>
-        </li>
-    {/each}
-</ul>
+{#if app.state.recipes}
+    <ul class="recipe-list">
+        {#each app.state.recipes.recipes as recipe}
+            <li class="recipe-list__item">
+                <a class="recipe" href={`/recipes/${recipe.recipe_id}`}>
+                    <h2 class="recipe__title">{recipe.name}</h2>
+                    <img
+                        class="recipe__icon"
+                        src={recipe.icon}
+                        alt={recipe.name + " icon"}
+                    />
+                </a>
+            </li>
+        {/each}
+    </ul>
+{/if}
 
 <style>
 .recipe-list {
