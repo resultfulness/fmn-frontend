@@ -88,8 +88,15 @@ const api = {
         async putItem(id: number, item_id: number): Promise<Cart> {
             return await apiFetch(`/carts/${id}/${item_id}`, "PUT");
         },
-        async deleteItem(id: number, item_id: number): Promise<Cart> {
-            return await apiFetch(`/carts/${id}/${item_id}`, "DELETE");
+        async deleteItem(
+            id: number,
+            item_id: number,
+            origin?: string
+        ): Promise<Cart> {
+            return await apiFetch(
+                `/carts/${id}/${item_id}${origin ? "?origin=" + origin : ""}`,
+                "DELETE"
+            );
         },
         async patch(newCart: CartPatch): Promise<Cart> {
             return await apiFetch(
@@ -100,6 +107,9 @@ const api = {
         },
         async delete(id: number): Promise<Cart> {
             return await apiFetch(`/carts/${id}`, "DELETE");
+        },
+        async putRecipe(id: number, recipe_id: number): Promise<Cart> {
+            return await apiFetch(`/carts/${id}/recipes/${recipe_id}`, "PUT");
         }
     },
     items: {

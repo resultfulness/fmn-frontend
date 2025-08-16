@@ -47,6 +47,7 @@ export type Item = {
     item_id: number;
     name: string;
     icon: string;
+    origin?: string;
 };
 
 export type ItemNew = {
@@ -76,6 +77,6 @@ export type Recipe = {
 } & RecipeSearch;
 
 export type Recipes = {
-    recipes: RecipeSearch[],
+    recipes: Recipe[],
     count: number;
 }
