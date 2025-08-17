@@ -12,6 +12,12 @@
     --color-text: #eafafe;
     --color-success: #a1da70;
     --color-warn: #daa970;
+
+    --z-base: 1;
+    --z-footer: 2;
+    --z-above-footer: 3;
+    --z-above-above-footer: 4;
+    --z-floating: 9;
 }
 
 *, *::before, *::after {

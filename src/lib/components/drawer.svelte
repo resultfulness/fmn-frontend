@@ -43,7 +43,7 @@ let drawer: HTMLDialogElement = $state()!;
     left: 0;
     right: 0;
     bottom: 0;
-    z-index: 3;
+    z-index: var(--z-above-above-footer);
 }
 
 .drawer {
@@ -74,7 +74,7 @@ let drawer: HTMLDialogElement = $state()!;
 
 @media screen and (min-height: 1000px) {
     .drawer-anchor {
-        z-index: 1;
+        z-index: var(--z-base);
     }
     .drawer--open {
         transform: translateY(calc(-100% - 4rem));

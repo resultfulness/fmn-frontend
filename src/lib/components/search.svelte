@@ -61,7 +61,7 @@ onMount(() => {
         bottom: 0;
         left: 0;
         right: 0;
-        z-index: 9;
+        z-index: var(--z-above-footer);
     }
 }
 </style>

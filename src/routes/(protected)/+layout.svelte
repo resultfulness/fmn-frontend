@@ -154,7 +154,7 @@ main {
 
 footer {
     position: relative;
-    z-index: 2;
+    z-index: var(--z-footer);
     background-color: var(--color-background);
 }
 

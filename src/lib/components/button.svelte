@@ -89,7 +89,7 @@ let {
     white-space: nowrap;
     background-color: var(--color-text);
     color: var(--color-background);
-    z-index: 8;
+    z-index: var(--z-floating);
     font-size: 0.875rem;
 }
 
@@ -108,7 +108,7 @@ let {
     border-width: 0.5em;
     border-style: solid;
     border-color: var(--color-text) transparent transparent transparent;
-    z-index: 8;
+    z-index: var(--z-floating);
 }
 
 .button:hover .button__tooltip {

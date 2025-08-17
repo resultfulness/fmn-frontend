@@ -36,7 +36,7 @@ import { toast } from "$lib/toast.svelte";
 
 <style>
 .toast {
-    z-index: 9;
+    z-index: var(--z-floating);
     position: absolute;
     left: 0;
     right: 0;

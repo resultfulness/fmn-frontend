@@ -12,7 +12,7 @@ import app from "$lib/app.svelte";
 <style>
 .loader {
     position: relative;
-    z-index: 10;
+    z-index: var(--z-floating);
     width: 100%;
     height: 0;
     overflow: visible;

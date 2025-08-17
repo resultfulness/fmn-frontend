@@ -337,7 +337,7 @@ let h = $state(0);
         left: 0;
         right: 0;
         top: 0;
-        z-index: 3;
+        z-index: var(--z-above-footer);
         display: flex;
         flex-direction: column;
     }
