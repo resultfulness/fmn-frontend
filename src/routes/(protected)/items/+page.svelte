@@ -12,6 +12,7 @@ import { getContext, onMount } from "svelte";
 import unfocusOnMobileKeyboardHidden from "$lib/mobile-unfocus";
 import type { LayoutHeader } from "../+layout.svelte";
 import app from "$lib/app.svelte";
+import Search from "$lib/components/search.svelte";
 
 async function fetchItems() {
     app.state.isLoading++;
@@ -197,68 +198,31 @@ onMount(() => {
 });
 </script>
 
-<ul class="items__list">
-    {#if filteredItems.length > 0}
-        {#each filteredItems as item}
-            <li class="item">
-                <img
-                    src={item.icon}
-                    alt={item.name + " icon"}
-                    class="item__icon"
-                />
-                <p class="item__name">{item.name}</p>
-                <div class="item__edit">
-                    <Button style="icon" onclick={() => edit(item)}>
-                        <Icon name="edit" size={28} />
-                    </Button>
-                </div>
-            </li>
-        {/each}
-    {:else}
-        <p class="empty-label">no items for '{searchterm}'</p>
-    {/if}
-</ul>
-{#if !searchMode}
-    <section class="fake-search">
-        <div class="fake-input">
-            {#if searchterm}
-                <span class="fake-input__searchterm">{searchterm}</span>
-            {:else}
-                search for items...
-            {/if}
-            <button
-                class="fake-input__action"
-                aria-label="open item search"
-                onclick={search}
-            ></button>
-            {#if searchterm}
-                <button
-                    class="fake-input__clear"
-                    onclick={() => (searchterm = "")}
-                >
-                    <Icon name="close" />
-                </button>
-            {/if}
-        </div>
-        <Button style="icon" onclick={add}>
-            <Icon name="add" size={36} />
-        </Button>
-    </section>
+{#if app.state.items}
+    <ul class="card-list">
+        {#if filteredItems.length > 0}
+            {#each filteredItems as item}
+                <li>
+                    <button class="card item" onclick={() => edit(item)}>
+                        <img
+                            src={item.icon}
+                            alt={item.name + " icon"}
+                            class="item__icon"
+                        />
+                        <p class="card__title">{item.name}</p>
+                        <div class="item__edit-icon">
+                            <Icon name="edit" size={28} />
+                        </div>
+
+                    </button>
+                </li>
+            {/each}
+        {:else}
+            <p class="empty-label">no items for '{searchterm}'</p>
+        {/if}
+    </ul>
 {/if}
-<Drawer bind:ref={searchDrawer} onclose={nosearch} noanim>
-    <div class="search-drawer">
-        <Input
-            id="items-search"
-            bind:value={searchterm}
-            placeholder="search for items..."
-            ariaLabel="search for items"
-            showClear
-        />
-        <Button style="icon" onclick={add}>
-            <Icon name="add" size={36} />
-        </Button>
-    </div>
-</Drawer>
+<Search id="items-search" bind:searchterm placeholder="search for items..." onadd={add} />
 <Drawer bind:ref={editDrawer} onclose={noedit}>
     <form class="form" onsubmit={handleEdit}>
         <header class="form__header">
@@ -315,27 +279,12 @@ onMount(() => {
 </Drawer>
 
 <style>
-.items__list {
-    flex: 1;
-    list-style-type: none;
-    padding: 1rem;
-    margin: 0;
-    overflow: auto;
-}
-
 .item {
-    background-color: var(--color-surface1);
+    margin-bottom: 0.5rem;
     padding: 0.5rem;
-    display: flex;
     justify-content: start;
     align-items: center;
     gap: 1rem;
-    border-radius: 1rem;
-    margin-bottom: 0.5rem;
-}
-
-.item__name {
-    margin: 0;
 }
 
 .item__icon {
@@ -343,56 +292,9 @@ onMount(() => {
     object-fit: cover;
 }
 
-.item__edit {
+.item__edit-icon {
     margin-left: auto;
     margin-right: 0.25rem;
     display: grid;
-}
-
-.fake-search {
-    background-color: var(--color-surface2);
-    padding: 1rem;
-    border-top-left-radius: 1rem;
-    border-top-right-radius: 1rem;
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 1rem;
-}
-
-.fake-input {
-    padding: 0.75rem;
-    border-radius: 0.5rem;
-    border: 2px solid var(--color-outline);
-    background-color: var(--color-surface0);
-    color: var(--color-outline);
-    position: relative;
-}
-
-.fake-input__searchterm {
-    color: var(--color-text);
-}
-
-.fake-input__action {
-    position: absolute;
-    inset: 0;
-    background-color: transparent;
-    border: none;
-    cursor: text;
-}
-
-.fake-input__clear {
-    position: absolute;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    padding-inline: 1rem;
-    background: transparent;
-    border: 0;
-}
-
-.search-drawer {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 1rem;
 }
 </style>

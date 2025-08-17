@@ -1,0 +1,43 @@
+.card-list {
+    list-style-type: none;
+    margin: 0;
+    padding: 1rem;
+    overflow: scroll;
+    flex: 1;
+}
+
+.card {
+    position: relative;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background-color: var(--color-surface1);
+    border-radius: 1rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+.card__title {
+    margin: 0;
+}
+
+.card--vertical {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+
+a.card {
+    text-decoration: none;
+    color: inherit;
+}
+
+button.card {
+    border: 0;
+    width: 100%;
+    cursor: pointer;
+}
+
+a.card:hover,
+button.card:hover {
+    background-color: var(--color-surface2);
+}

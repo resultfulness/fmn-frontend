@@ -62,11 +62,11 @@ async function handleSubmit(e: SubmitEvent) {
 </script>
 
 {#if app.state.user}
-    <section class="card card--info">
+    <section class="card card--vertical info">
         <h2 class="card__title">info</h2>
-        <span>role: {app.state.user.role}</span>
+        <p class="info__role">role: {app.state.user.role}</p>
         {#if editMode}
-            <form class="form card--info__form" onsubmit={handleSubmit}>
+            <form class="form form--popout" onsubmit={handleSubmit}>
                 <h3 class="form__title">details (edit)</h3>
 
                 <Input
@@ -115,9 +115,9 @@ async function handleSubmit(e: SubmitEvent) {
                 </div>
             </form>
         {:else}
-            <div class="card--info__details">
-                <div class="card--info__details__header">
-                    <h3 class="card--info__details__title">details</h3>
+            <div class="info__details">
+                <div class="info__details__header">
+                    <h3 class="info__details__title">details</h3>
                     <Button
                         style="icon"
                         onclick={() => {
@@ -128,19 +128,19 @@ async function handleSubmit(e: SubmitEvent) {
                     </Button>
                 </div>
 
-                <table class="card--info__details__table">
+                <table class="info__details__table">
                     <tbody>
-                        <tr class="card--info__details__entry">
+                        <tr class="info__details__entry">
                             <td>username:</td>
                             <td>{app.state.user.username}</td>
                         </tr>
-                        <tr class="card--info__details__entry">
+                        <tr class="info__details__entry">
                             <td>email:</td>
                             <td>{app.state.user.email}</td>
                         </tr>
-                        <tr class="card--info__details__entry">
+                        <tr class="info__details__entry">
                             <td>password:</td>
-                            <td class="card--info__details__password">
+                            <td class="info__details__password">
                                 {#each Array(8) as _}
                                     <Icon name="circle" size={12} />
                                 {/each}
@@ -166,63 +166,37 @@ async function handleSubmit(e: SubmitEvent) {
 {/if}
 
 <style>
-.card {
-    position: relative;
-    background-color: var(--color-surface1);
-    padding: 1rem;
-    border-radius: 1rem;
-    margin: 1rem 1rem 0;
+.info {
+    margin: 1rem;
 }
 
-.card__title {
+.info__role {
     margin: 0;
-    margin-bottom: 1rem;
 }
 
-.card--info__form {
-    margin-top: 1rem;
-}
-
-@media screen and (max-height: 560px) {
-    .card--info__form {
-        position: fixed;
-        inset: 0;
-        overflow-x: hidden;
-        margin: 1rem;
-        background-color: var(--color-surface1);
-        border-radius: 1rem;
-        padding: 1rem;
-        z-index: 4;
-    }
-
-    .form__title {
-        display: none;
-    }
-}
-
-.card--info__details__header {
+.info__details__header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-block: 1rem;
+    margin-bottom: 1rem;
 }
 
-.card--info__details__table {
+.info__details__table {
     width: 100%;
     border: 0;
     border-collapse: collapse;
 }
 
-.card--info__details__title {
+.info__details__title {
     margin: 0;
 }
 
-.card--info__details__entry {
+.info__details__entry {
     display: flex;
     justify-content: space-between;
 }
 
-.card--info__details__password {
+.info__details__password {
     display: flex;
     align-items: center;
 }
@@ -232,6 +206,6 @@ td {
 }
 
 .logout {
-    margin: 1rem;
+    margin-inline: 1rem;
 }
 </style>

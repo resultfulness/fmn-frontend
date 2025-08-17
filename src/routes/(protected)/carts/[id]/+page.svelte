@@ -2,13 +2,9 @@
 import { getContext, onMount } from "svelte";
 import api from "$lib/api";
 import Button from "$lib/components/button.svelte";
-import Drawer from "$lib/components/drawer.svelte";
 import Icon from "$lib/components/icon.svelte";
 import Input from "$lib/components/input.svelte";
-import { afterNavigate, goto } from "$app/navigation";
-import Separator from "$lib/components/separator.svelte";
-import { showConfirm } from "$lib/components/confirm.svelte";
-import { showToast } from "$lib/toast.svelte";
+import { afterNavigate } from "$app/navigation";
 import app from "$lib/app.svelte";
 import unfocusOnMobileKeyboardHidden from "$lib/mobile-unfocus";
 import type { LayoutHeader } from "../../+layout.svelte";
@@ -107,101 +103,6 @@ async function remove(id: number, origin?: string) {
 
 let showRecipes = $state(false);
 let h = $state(0);
-
-// {{{ cart edit
-let form = $state({
-    name: "",
-    icon: "",
-    error: { name: "", icon: "" },
-});
-let submitDisabled = $derived(
-    (form.name === cart.name && form.icon === cart.icon) ||
-        (!form.name && !form.icon)
-);
-let editDrawer: HTMLDialogElement = $state()!;
-function edit() {
-    form.name = cart.name;
-    form.icon = cart.icon;
-    editDrawer.show();
-    editDrawer.focus();
-}
-function noedit() {
-    editDrawer.close();
-    form.error.name = "";
-    form.error.icon = "";
-}
-async function handleEdit(e: SubmitEvent) {
-    e.preventDefault();
-    form.error = { name: "", icon: "" };
-
-    if (!form.name) {
-        form.error.name = "name required";
-        return;
-    }
-
-    if (!form.icon) {
-        form.error.icon = "icon required";
-        return;
-    }
-
-    if (submitDisabled) {
-        return;
-    }
-
-    try {
-        if (app.state.defaultCart && isDefault) {
-            app.state.defaultCart.name = form.name;
-            app.state.defaultCart.icon = form.icon;
-        } else {
-            cart.name = form.name;
-            cart.icon = form.icon;
-        }
-        const res = await api.carts.patch({
-            cart_id: cart.cart_id,
-            name: form.name,
-            icon: form.icon,
-        });
-        if (res) {
-            noedit();
-            showToast("cart updated", "success");
-            if (isDefault) {
-                app.state.defaultCart = res;
-            } else {
-                cart = res;
-            }
-        }
-    } catch (e) {}
-}
-async function handleDelete() {
-    if (
-        await showConfirm(
-            "delete confirmation",
-            `are you sure you want to remove '${cart.name}'?`
-        )
-    ) {
-        try {
-            const res = await api.carts.delete(cart.cart_id);
-            if (res) {
-                showToast(`cart '${res.name}' deleted`, "success");
-                if (app.state.user?.cart_id === res.cart_id) {
-                    app.state.user.cart_id = null;
-                    app.state.defaultCart = undefined;
-                }
-                goto("/carts");
-            }
-        } catch (e) {}
-    }
-}
-
-async function handleSetDefault() {
-    try {
-        await api.users.putDefaultCart(id);
-        app.state.user!.cart_id = id;
-        app.updateDefaultCart();
-        showToast("cart set as default", "success");
-    } catch (e) {}
-}
-// }}}
 </script>
 
 {#snippet back()}
@@ -211,7 +112,7 @@ async function handleSetDefault() {
 {/snippet}
 
 {#snippet opts()}
-    <Button style="icon" onclick={edit}>
+    <Button style="icon" href={`/carts/${cart.cart_id}/edit`} type="link">
         <Icon name="edit" size={28} />
     </Button>
 {/snippet}
@@ -317,54 +218,6 @@ async function handleSetDefault() {
     {/if}
 </section>
 
-<Drawer bind:ref={editDrawer} onclose={noedit}>
-    <div class="edit-drawer">
-        <form class="form edit-drawer__form" onsubmit={handleEdit}>
-            <header class="form__header">
-                <h2 class="form__title">editing {cart.name}</h2>
-            </header>
-            <Input
-                id="cart-name"
-                bind:value={form.name}
-                error={form.error.name}
-                label="name:"
-            />
-            <Input
-                id="cart-icon"
-                bind:value={form.icon}
-                error={form.error.icon}
-                label="icon:"
-            />
-            <div class="form__submit">
-                <Button
-                    fillwidth
-                    disabled={submitDisabled}
-                    tooltip={submitDisabled
-                        ? "change something first!"
-                        : undefined}
-                >
-                    save
-                </Button>
-            </div>
-        </form>
-        <Separator />
-        <Button
-            fillwidth
-            onclick={handleSetDefault}
-            disabled={app.state.user?.cart_id === cart.cart_id}
-            tooltip={app.state.user?.cart_id === cart.cart_id
-                ? "cart already default"
-                : undefined}
-        >
-            set as default cart
-        </Button>
-        <Separator />
-        <Button fillwidth onclick={handleDelete} style="alert">
-            delete cart
-        </Button>
-    </div>
-</Drawer>
-
 <style>
 .items--rest {
     background-color: var(--color-surface1);
@@ -396,7 +249,7 @@ async function handleSetDefault() {
 }
 
 .items__search {
-    margin: 0 1rem 1rem;
+    margin-inline: 1rem;
 }
 
 .items__list {
@@ -467,29 +320,13 @@ async function handleSetDefault() {
 }
 
 @media screen and (min-width: 720px) {
-    .items--rest {
-        overflow: hidden;
+    .items--rest,
+    .items__tabs {
         border-top-left-radius: 1rem;
         border-top-right-radius: 1rem;
     }
-}
-
-.edit-drawer {
-    display: grid;
-    gap: 1rem;
-}
-
-@media screen and (max-height: 560px) {
-    .edit-drawer__form {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background-color: var(--color-surface2);
-        border-top-left-radius: 1rem;
-        border-top-right-radius: 1rem;
-        padding: 1rem;
-        z-index: 4;
+    .items__tabs {
+        overflow: hidden;
     }
 }
 
@@ -500,7 +337,7 @@ async function handleSetDefault() {
         left: 0;
         right: 0;
         top: 0;
-        z-index: 4;
+        z-index: 3;
         display: flex;
         flex-direction: column;
     }
