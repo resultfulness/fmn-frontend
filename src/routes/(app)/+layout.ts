@@ -4,10 +4,10 @@ import { redirect } from "@sveltejs/kit";
 
 export const load: LayoutLoad = async ({ url }) => {
     if (app.state.defaultCart === undefined) {
-        app.updateDefaultCart();
+        await app.updateDefaultCart();
     }
 
     if (url.pathname === "/") {
-        throw redirect(302, `/carts/${app.state.defaultCart ?? ""}`);
+        throw redirect(302, `/carts/${app.state.defaultCart?.cart_id ?? ""}`);
     }
 }
