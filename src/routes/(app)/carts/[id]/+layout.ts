@@ -1,6 +1,6 @@
 import api from "$lib/api";
 import { error } from "@sveltejs/kit";
-import type { PageLoad } from "./$types";
+import type { PageLoad } from "../../../(protected)/carts/[id]/$types";
 import app from "$lib/app.svelte";
 
 export const load: PageLoad = async ({ params, fetch }) => {

@@ -1,18 +1,16 @@
-import api from "./api";
-import type { Cart, Carts, Items, Recipes, User } from "./types";
+import api, { ApiError } from "./api";
+import type { Cart, Carts, Items, Recipes } from "./types";
 
 interface AppState {
     isLoading: number,
-    user: User | null,
     items: Items,
     carts: Carts,
     recipes: Recipes,
-    defaultCart?: Cart,
+    defaultCart?: Cart | null,
 }
 
 const state = $state({
     isLoading: 0,
-    user: null,
 });
 
 const app = {
@@ -21,12 +19,13 @@ const app = {
         this.state.carts = await api.carts.getAll();
     },
     async updateDefaultCart() {
-        if (!app.state.user?.cart_id) {
-            this.state.defaultCart = undefined;
-        } else {
-            this.state.defaultCart = await api.carts.get(
-                app.state.user.cart_id
-            );
+        try {
+            this.state.defaultCart = await api.carts.getDefault();
+        } catch (e) {
+            const ae = e as ApiError;
+            if (ae.status === 404) {
+                app.state.defaultCart = null;
+            }
         }
     },
     async updateItems() {

@@ -8,14 +8,12 @@ export type LayoutHeader = {
 
 <script lang="ts">
 import Icon from "$lib/components/icon.svelte";
-import app from "$lib/app.svelte";
-import type { LayoutProps } from "./$types";
 import { page } from "$app/state";
 import { setContext, type Snippet } from "svelte";
 import { beforeNavigate } from "$app/navigation";
 import Loading from "./loading.svelte";
 
-let { children }: LayoutProps = $props();
+let { children } = $props();
 
 let header: LayoutHeader = $state({
     title: "forget me not",
@@ -54,7 +52,7 @@ let path = $derived(page.url.pathname);
             <ul class="main-nav__list">
                 <li class="main-nav__item">
                     <a
-                        href={`/carts/${app.state.user?.cart_id ?? ""}`}
+                        href={`/carts/`}
                         class="main-nav__link"
                         class:main-nav__link--active={path.startsWith("/carts")}
                     >
@@ -74,27 +72,14 @@ let path = $derived(page.url.pathname);
                         </div>
                     </a>
                 </li>
-                {#if app.state.user?.role === "admin"}
-                    <li class="main-nav__item">
-                        <a
-                            href="/items"
-                            class="main-nav__link"
-                            class:main-nav__link--active={path === "/items"}
-                        >
-                            <div class="main-nav__link__icon">
-                                <Icon name="kitchen" />
-                            </div>
-                        </a>
-                    </li>
-                {/if}
                 <li class="main-nav__item">
                     <a
-                        href="/profile"
+                        href="/items"
                         class="main-nav__link"
-                        class:main-nav__link--active={path === "/profile"}
+                        class:main-nav__link--active={path === "/items"}
                     >
                         <div class="main-nav__link__icon">
-                            <Icon name="person" />
+                            <Icon name="kitchen" />
                         </div>
                     </a>
                 </li>

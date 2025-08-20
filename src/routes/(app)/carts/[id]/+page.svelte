@@ -23,9 +23,7 @@ $effect(() => {
 let { data } = $props();
 let { id } = data;
 let isDefault = $derived(
-    app.state.defaultCart !== undefined &&
-        app.state.defaultCart.cart_id !== undefined &&
-        app.state.defaultCart.cart_id === id
+    app.state.defaultCart && app.state.defaultCart.cart_id === id
 );
 let cart: Cart = $derived(
     app.state.defaultCart && isDefault
@@ -38,8 +36,8 @@ async function fetchDeps() {
     await app.updateItems();
     await app.updateRecipes();
     if (app.state.defaultCart && isDefault) {
-        await app.updateDefaultCart();
         cart = app.state.defaultCart;
+        await app.updateDefaultCart();
     } else {
         cart = await api.carts.get(id);
     }

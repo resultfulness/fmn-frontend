@@ -3,10 +3,6 @@
     gap: 1rem;
 }
 
-.form--auth {
-    width: min(100% - 4rem, 400px);
-}
-
 .form__title {
     margin: 0;
 }

@@ -1,7 +1,17 @@
-import app from "./app.svelte";
-import type { Cart, CartNew, CartPatch, Carts, Item, ItemNew, Items, Recipe, RecipeNew, RecipePatch, Recipes, User, UserPatch } from "./types";
+import type {
+    Cart,
+    CartNew,
+    CartPatch,
+    Carts,
+    Item,
+    ItemNew,
+    Items,
+    Recipe,
+    RecipeNew,
+    RecipePatch,
+    Recipes,
+} from "./types";
 import { PUBLIC_API_URL } from "$env/static/public";
-import auth from "./auth.svelte";
 
 export class ApiError extends Error {
     constructor(message: string, public status: number) {
@@ -27,10 +37,6 @@ async function apiFetch(
         return null;
     }
     if (!r.ok) {
-        if (r.status === 401) {
-            auth.logoutUnauthorized();
-            return;
-        }
         throw new ApiError((await r.json()).error || "unknown error", r.status);
     } else {
         return await r.json();
@@ -39,38 +45,6 @@ async function apiFetch(
 
 const api = {
     fetch_fn: window.fetch,
-    users: {
-        async me(): Promise<User> {
-            return await apiFetch("/users/me");
-        },
-        async login(email: string, password: string): Promise<User> {
-            return await apiFetch(
-                "/users/login",
-                "POST",
-                { email, password }
-            );
-        },
-        async register(email: string, password: string): Promise<User> {
-            return await apiFetch(
-                "/users/register",
-                "POST",
-                { email, password }
-            );
-        },
-        async patch(newUser: UserPatch) {
-            return await apiFetch(
-                `/users/${app.state.user?.user_id}`,
-                "PATCH",
-                newUser
-            );
-        },
-        async getDefaultCart(): Promise<Cart> {
-            return await apiFetch("/users/cart");
-        },
-        async putDefaultCart(id: number) {
-            return await apiFetch(`/users/cart/${id}`, "PUT");
-        }
-    },
     carts: {
         async new(newCart: CartNew) {
             return await apiFetch(
@@ -110,6 +84,12 @@ const api = {
         },
         async putRecipe(id: number, recipe_id: number): Promise<Cart> {
             return await apiFetch(`/carts/${id}/recipes/${recipe_id}`, "PUT");
+        },
+        async getDefault(): Promise<Cart> {
+            return await apiFetch("/carts/default");
+        },
+        async putDefault(id: number): Promise<Cart> {
+            return await apiFetch(`/carts/default?cart_id=${id}`, "PUT");
         }
     },
     items: {

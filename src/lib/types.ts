@@ -1,17 +1,3 @@
-export type User = {
-    email: string;
-    role: string;
-    user_id: number;
-    username: string;
-    cart_id: number | null;
-};
-
-export type UserPatch = {
-    email?: string;
-    username?: string;
-    password?: string;
-};
-
 export type Carts = {
     carts: CartSearch[];
     count: number;

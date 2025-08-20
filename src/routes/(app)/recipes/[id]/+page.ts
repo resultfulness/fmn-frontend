@@ -1,6 +1,6 @@
 import api, { ApiError } from "$lib/api";
 import { error } from "@sveltejs/kit";
-import type { PageLoad } from "./$types";
+import type { PageLoad } from "../../../(protected)/recipes/[id]/$types";
 
 export const load: PageLoad = async ({ params, fetch }) => {
     api.fetch_fn = fetch;

@@ -23,9 +23,7 @@ $effect(() => {
 let { data } = $props();
 let { id } = data;
 let isDefault = $derived(
-    app.state.defaultCart !== undefined &&
-        app.state.defaultCart.cart_id !== undefined &&
-        app.state.defaultCart.cart_id === id
+    app.state.defaultCart && app.state.defaultCart.cart_id === id
 );
 let cart: Cart = $derived(
     app.state.defaultCart && isDefault
@@ -36,8 +34,8 @@ let cart: Cart = $derived(
 async function fetchDeps() {
     app.state.isLoading++;
     if (app.state.defaultCart && isDefault) {
-        await app.updateDefaultCart();
         cart = app.state.defaultCart;
+        await app.updateDefaultCart();
     } else {
         cart = await api.carts.get(id);
     }
@@ -112,9 +110,8 @@ async function handleDelete() {
             const res = await api.carts.delete(cart.cart_id);
             if (res) {
                 showToast(`cart '${res.name}' deleted`, "success");
-                if (app.state.user?.cart_id === res.cart_id) {
-                    app.state.user.cart_id = null;
-                    app.state.defaultCart = undefined;
+                if (app.state.defaultCart?.cart_id === res.cart_id) {
+                    app.state.defaultCart = null;
                 }
                 goto("/carts");
             }
@@ -124,9 +121,8 @@ async function handleDelete() {
 
 async function handleSetDefault() {
     try {
-        await api.users.putDefaultCart(id);
-        app.state.user!.cart_id = id;
-        app.updateDefaultCart();
+        app.state.defaultCart = cart;
+        await api.carts.putDefault(id);
         showToast("cart set as default", "success");
     } catch (e) {}
 }
@@ -168,8 +164,8 @@ async function handleSetDefault() {
     <Button
         fillwidth
         onclick={handleSetDefault}
-        disabled={app.state.user?.cart_id === cart.cart_id}
-        tooltip={app.state.user?.cart_id === cart.cart_id
+        disabled={app.state.defaultCart?.cart_id === cart.cart_id}
+        tooltip={app.state.defaultCart?.cart_id === cart.cart_id
             ? "cart already default"
             : undefined}
     >
